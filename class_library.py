@@ -329,6 +329,7 @@ class CutSiteRemover():
         self.cut_site_list = sorted( set( self.cut_site_list ) )
         self.codon2aa = codon2aa
         self.aa2codon_freq_list = aa2codon_freq_list
+        self.max_cut_site_len = max([len(c) for c in self.cut_site_list])
         return
     
     def substring_indexes( self, substring, string ):
@@ -408,6 +409,32 @@ class CutSiteRemover():
         codon_list_copy[pos] = new_codon
         return ''.join(codon_list_copy)
 
+    # update 27.02.2019
+    def check_replacement_introduces_other_cut_site(self, codon_index, index_2_start_from, dna_seq):
+        position_replaced_codon = index_2_start_from + codon_index * 3
+        # the following only works for cut sites with 6 nt - not 8er cutter!
+        frame_min = position_replaced_codon - (self.max_cut_site_len - 1) # either 5 or 7, for 6er or 8er cutter
+        if frame_min < 0:
+            frame_min = 0
+        frame_max = position_replaced_codon + (self.max_cut_site_len - 1) + 3
+        if frame_max > len(dna_seq):
+            frame_max = len(dna_seq)
+        dna_seq_original = self.dna_seq_new[frame_min : frame_max]
+        dna_seq_cleaned = dna_seq[frame_min : frame_max]
+        n_cut_sites_original, n_cut_sites_cleaned = 0, 0
+        for cut_site in self.cut_site_list:
+            for i in self.substring_indexes(substring=cut_site, string=dna_seq_original):
+                if i != -1:
+                    n_cut_sites_original += 1
+        for cut_site in self.cut_site_list:
+            for i in self.substring_indexes(substring=cut_site, string=dna_seq_cleaned):
+                if i != -1:
+                    n_cut_sites_cleaned += 1
+        #print(index_2_start_from, codon_index, dna_seq_original, dna_seq_cleaned, n_cut_sites_original, n_cut_sites_cleaned)
+        if n_cut_sites_cleaned < n_cut_sites_original:
+            return True
+        return False
+
 
     def main( self, iter_max = 1000 ):
         iter_counter = 0
@@ -429,7 +456,7 @@ class CutSiteRemover():
                     # get codons to replace
                     codon_list = self.get_codon_list( dna_seq = self.dna_seq_new[ index_2_start_from : i + len( cut_site ) + addition ] )
                     freq_codon_list = []
-                    for codon in codon_list:
+                    for j, codon in enumerate(codon_list):
                         codon_freq_list = self.aa2codon_freq_list[ self.codon2aa[ codon ] ]
                         if len( codon_freq_list ) == 1:
                             self.log_dict[ cut_site ][ i ][ 'freq_altcodon_orgcodon_remove_list' ].append( ( codon_freq_list[0][-1], codon_freq_list[0][0], codon_freq_list[0][0], False ) )
@@ -443,6 +470,15 @@ class CutSiteRemover():
                             if not self.check_codon_replacement_removes_cutsite(old_codon=codon, new_codon=c, codon_list=codon_list, cut_site=cut_site):
                                 self.log_dict[ cut_site ][ i ][ 'freq_altcodon_orgcodon_remove_list' ].append( ( f, c, old_codon, False ) )
                                 continue # codon replacement would not remove the cut site, thus go on
+                            # update 27.02.2019
+                            dna_seq_cut_site_removed = self.replace_codon(codon_list, old_codon, new_codon=c)
+                            if not self.check_replacement_introduces_other_cut_site(
+                                    codon_index=j,
+                                    index_2_start_from=index_2_start_from,
+                                    dna_seq=self.dna_seq_new[ : index_2_start_from ] + dna_seq_cut_site_removed + self.dna_seq_new[ i + len( cut_site ) + addition : ]):
+                                #self.log_dict[ cut_site ][ i ][ 'freq_altcodon_orgcodon_remove_list' ].append( ( f, c, old_codon, 'False2' ) )
+                                self.log_dict[ cut_site ][ i ][ 'freq_altcodon_orgcodon_remove_list' ].append( ( f, c, old_codon, False ) )
+                                continue
                             self.log_dict[ cut_site ][ i ][ 'freq_altcodon_orgcodon_remove_list' ].append( ( f, c, old_codon, True ) )
                             freq_codon_list.append( ( f, c, old_codon ) )
                     # determine codon to replace
