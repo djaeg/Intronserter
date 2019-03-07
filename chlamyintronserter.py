@@ -33,22 +33,31 @@ def parse_input( ArgsClass, MessageContainer ):
     # validate FASTA AA input for only valid characters
     allowed_characters = set(IUPAC.protein.letters + '*')
     assert sorted([ TMP.AA_lookup_dict[k]['1-letter'] for k in TMP.AA_lookup_dict ]) == sorted(allowed_characters)
+    allowed_characters_DNA = IUPAC.unambiguous_dna.letters
     for name, seq in aa_seq_dict.items():
-        if not set(seq).issubset(allowed_characters):
-            MessageContainer.messages['global'].append('[ ERROR ] Your FASTA sequence {0} contains invalid characters. Allowed characters are {1}'.format(name, sorted(allowed_characters)))
-            aa_seq_dict[name] = ''
+        if ArgsClass.only_insert_introns:
+            if not set(seq).issubset(allowed_characters_DNA):
+                MessageContainer.messages['global'].append('[ ERROR ] You specified --only_insert_introns, but your FASTA sequence {0} contains invalid characters. Allowed characters for this option are {1}'.format(name, sorted(allowed_characters_DNA)))
+                aa_seq_dict[name] = ''
+        else:
+            if not set(seq).issubset(allowed_characters):
+                MessageContainer.messages['global'].append('[ ERROR ] Your FASTA sequence {0} contains invalid characters. Allowed characters are {1}'.format(name, sorted(allowed_characters)))
+                aa_seq_dict[name] = ''
 
     # check if aa- or cDNA-seq:
     allowed_characters = set('ATCG')
     for name, seq in aa_seq_dict.items():
         MessageContainer.messages[name] = []
         if seq and set(seq).issubset(allowed_characters):
-            MessageContainer.messages[name].append( '[ INFO ] Your input sequence "{0}" seems to be a cDNA sequence, because it contains only the characters A, T, C and G. The sequence will be translated to its amino acid counterpart first.'.format(name) )
             if len(seq) % 3 != 0:
                 MessageContainer.messages[name].append( '[ ERROR ] Your input sequence "{0}" seems to be a cDNA sequence, but its length is not a multiplier of 3! Please re-submit a valid sequence, preferably as amino acids.'.format(name) )
                 aa_seq_dict[ name ] = ''
             else:
-                aa_seq_dict[ name ] = class_library.CodonOptimizer( '' ).translate( seq, TMP.codon2aa_oneletter )
+                if ArgsClass.only_insert_introns:
+                    MessageContainer.messages[name].append( '[ INFO ] Your input sequence "{0}" seems to be a cDNA sequence and the option --only_insert_introns was specified. Only introns will be inserted, nothing else.'.format(name) )
+                else:
+                    MessageContainer.messages[name].append( '[ INFO ] Your input sequence "{0}" seems to be a cDNA sequence, because it contains only the characters A, T, C and G. The sequence will be translated to its amino acid counterpart first.'.format(name) )
+                    aa_seq_dict[ name ] = class_library.CodonOptimizer( '' ).translate( seq, TMP.codon2aa_oneletter )
 
     if ArgsClass.custom_codon_usage_table_file:
         with open(ArgsClass.custom_codon_usage_table_file) as fin:
@@ -130,6 +139,8 @@ def parse_input( ArgsClass, MessageContainer ):
     kwargs[ 'remove_start_codon' ]  = True if ArgsClass.remove_start_codon else False
     kwargs[ 'remove_stop_codon' ]   = True if ArgsClass.remove_stop_codon else False
 
+    kwargs[ 'only_insert_introns' ] = True if ArgsClass.only_insert_introns else False
+
     kwargs[ 'output_dict' ] = None
     return kwargs
 
@@ -140,65 +151,79 @@ def process_input( kwargs, MessageContainer ):
     remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
 
     # check if the intron sequences are free from cut sites
-    CSR_class = class_library.CutSiteRemover( dna_seq = '', cut_site_list = kwargs[ 'cut_site_list' ], codon2aa = {}, aa2codon_freq_list = {} )
-    for name, seq in kwargs[ 'intron_name_seq_list' ]:
-        seq = kwargs[ 'insertion_seq' ][0] + seq + kwargs[ 'insertion_seq' ][1]
-        cut_site2index_list = CSR_class.get_cut_site_indices( dna_seq = seq )
-        if cut_site2index_list:
-            l = []
-            for cut_site, index_found_at_list in cut_site2index_list.items():
-                l.append( 'cut site "{0}" at the position(s): {1}'.format( cut_site, index_found_at_list ) )
-            MessageContainer.messages['global'].append( '[ ERROR ] The following cut sites are part of the "{1}" intron sequence: {0}. (a) Intron insertion might NOT be possible and (b) these cut sites are NOT removed from the optimized sequence.'.format( l, name ) )
+    if not kwargs[ 'only_insert_introns' ]:
+        CSR_class = class_library.CutSiteRemover( dna_seq = '', cut_site_list = kwargs[ 'cut_site_list' ], codon2aa = {}, aa2codon_freq_list = {} )
+        for name, seq in kwargs[ 'intron_name_seq_list' ]:
+            seq = kwargs[ 'insertion_seq' ][0] + seq + kwargs[ 'insertion_seq' ][1]
+            cut_site2index_list = CSR_class.get_cut_site_indices( dna_seq = seq )
+            if cut_site2index_list:
+                l = []
+                for cut_site, index_found_at_list in cut_site2index_list.items():
+                    l.append( 'cut site "{0}" at the position(s): {1}'.format( cut_site, index_found_at_list ) )
+                MessageContainer.messages['global'].append( '[ ERROR ] The following cut sites are part of the "{1}" intron sequence: {0}. (a) Intron insertion might NOT be possible and (b) these cut sites are NOT removed from the optimized sequence.'.format( l, name ) )
 
     # fine tune sequence
-    start_codon, stop_codon = '', ''
-    if kwargs[ 'insert_start_codon' ]:
-        start_codon = 'M'
-    if kwargs[ 'insert_stop_codon' ]:
-        stop_codon = '*'
-        if kwargs[ 'linker_end' ]:
-            MessageContainer.messages['global'].append( '[ INFO ] Although you requested to insert a * stop codon, the * stop codon was NOT inserted, because you also requested a 3\'-linker. Inserting the * stop codon would have resulted in translation termination, counteracting your intended protein fusion as indicated by the 3\'-linker insertion request.' )
-            kwargs[ 'insert_stop_codon' ] = False
-            stop_codon = ''
-    for name, aa_seq in kwargs[ 'aa_seq_dict' ].items():
-        if not aa_seq:
-            continue
-        aa_seq = aa_seq.upper()
-        # remove start codon if requested
-        for  z in range(1000):
-            if kwargs[ 'remove_start_codon' ] and aa_seq.startswith('M'):
-                aa_seq = aa_seq[1:]
-            else:
-                break
-        # remove stop codon if requested or if 3'-linker = linker_end is given
-        for  z in range(1000):
-            if (kwargs[ 'remove_stop_codon' ] or kwargs[ 'linker_end' ]) and aa_seq.endswith('*'):
-                aa_seq = aa_seq[:-1]
-                if kwargs[ 'linker_end' ] and not kwargs[ 'remove_stop_codon' ]:
-                    MessageContainer.messages['global'].append( '[ INFO ] Although you did not request to remove the native * stop codon, the * stop codon was automatically removed, because you requested to insert a 3\'-linker. Not removing the * stop codon would have resulted in translation termination, counteracting your intended protein fusion as indicated by the 3\'-linker insertion request.' )
-            else:
-                break
-        # insert start codon, linker_start, linker end, stop_codon
-        kwargs[ 'aa_seq_dict' ][ name ] = start_codon + kwargs[ 'linker_start' ] + aa_seq + kwargs[ 'linker_end' ] + stop_codon
+    if not kwargs[ 'only_insert_introns' ]:
+        start_codon, stop_codon = '', ''
+        if kwargs[ 'insert_start_codon' ]:
+            start_codon = 'M'
+        if kwargs[ 'insert_stop_codon' ]:
+            stop_codon = '*'
+            if kwargs[ 'linker_end' ]:
+                MessageContainer.messages['global'].append( '[ INFO ] Although you requested to insert a * stop codon, the * stop codon was NOT inserted, because you also requested a 3\'-linker. Inserting the * stop codon would have resulted in translation termination, counteracting your intended protein fusion as indicated by the 3\'-linker insertion request.' )
+                kwargs[ 'insert_stop_codon' ] = False
+                stop_codon = ''
+        for name, aa_seq in kwargs[ 'aa_seq_dict' ].items():
+            if not aa_seq:
+                continue
+            aa_seq = aa_seq.upper()
+            # remove start codon if requested
+            for  z in range(1000):
+                if kwargs[ 'remove_start_codon' ] and aa_seq.startswith('M'):
+                    aa_seq = aa_seq[1:]
+                else:
+                    break
+            # remove stop codon if requested or if 3'-linker = linker_end is given
+            for  z in range(1000):
+                if (kwargs[ 'remove_stop_codon' ] or kwargs[ 'linker_end' ]) and aa_seq.endswith('*'):
+                    aa_seq = aa_seq[:-1]
+                    if kwargs[ 'linker_end' ] and not kwargs[ 'remove_stop_codon' ]:
+                        MessageContainer.messages['global'].append( '[ INFO ] Although you did not request to remove the native * stop codon, the * stop codon was automatically removed, because you requested to insert a 3\'-linker. Not removing the * stop codon would have resulted in translation termination, counteracting your intended protein fusion as indicated by the 3\'-linker insertion request.' )
+                else:
+                    break
+            # insert start codon, linker_start, linker end, stop_codon
+            kwargs[ 'aa_seq_dict' ][ name ] = start_codon + kwargs[ 'linker_start' ] + aa_seq + kwargs[ 'linker_end' ] + stop_codon
         
     for j, (name, aa_seq) in enumerate( kwargs[ 'aa_seq_dict' ].items() ):
         if not aa_seq:
             continue
         # initialize:
-        DB_class = class_library.Tables( aa_seq.upper() )
+        if kwargs[ 'only_insert_introns' ]:
+            DB_class = class_library.Tables( str(Seq(aa_seq, IUPAC.unambiguous_dna).translate()).upper() )
+        else:
+            DB_class = class_library.Tables( aa_seq.upper() )
         output_dict[ name ] = { 'cDNA_seq_plus_i' : None, 'genbank_string' : None, 'name' : '>{0}'.format(name) }
 
         # codon optimize:
-        DB_class.import_codon_table( codon_table_string = kwargs[ 'codon_table' ] )
-        DB_class.convert_codon_counts_2_freq()
-        CO_class = class_library.CodonOptimizer( aa_seq = DB_class.aa_seq )
-        CO_class.reverse_translate( DB_class.aa_oneletter_2_mostfreq_codon_dict )
-        DB_class.cDNA_seq = CO_class.dna_seq
+        if not kwargs[ 'only_insert_introns' ]:
+            DB_class.import_codon_table( codon_table_string = kwargs[ 'codon_table' ] )
+            DB_class.convert_codon_counts_2_freq()
+            CO_class = class_library.CodonOptimizer( aa_seq = DB_class.aa_seq )
+            CO_class.reverse_translate( DB_class.aa_oneletter_2_mostfreq_codon_dict )
+            DB_class.cDNA_seq = CO_class.dna_seq
+        else:
+            DB_class.import_codon_table( codon_table_string = kwargs[ 'codon_table' ] )
+            DB_class.convert_codon_counts_2_freq()
+            CO_class = class_library.CodonOptimizer( aa_seq = '' )
 
         # cut site removal:
-        CSR_class = class_library.CutSiteRemover( dna_seq = DB_class.cDNA_seq, cut_site_list = kwargs[ 'cut_site_list' ], codon2aa = DB_class.codon2aa, aa2codon_freq_list = DB_class.aa2codon_freq_list )
-        DB_class.cDNA_seq_cleaned = CSR_class.main( iter_max = 1000 )
-        MessageContainer.messages[name] += CSR_class.messages
+        if not kwargs[ 'only_insert_introns' ]:
+            CSR_class = class_library.CutSiteRemover( dna_seq = DB_class.cDNA_seq, cut_site_list = kwargs[ 'cut_site_list' ], codon2aa = DB_class.codon2aa, aa2codon_freq_list = DB_class.aa2codon_freq_list )
+            DB_class.cDNA_seq_cleaned = CSR_class.main( iter_max = 1000 )
+            MessageContainer.messages[name] += CSR_class.messages
+        else:
+            CSR_class = class_library.CutSiteRemover( dna_seq = '', cut_site_list = [], codon2aa = DB_class.codon2aa, aa2codon_freq_list = DB_class.aa2codon_freq_list )
+            DB_class.cDNA_seq_cleaned = aa_seq.upper() # aa_seq is in this case a cDNA seq
         
         # annotate the sequence using a mapping nucleotide->annotation
         seqlist = list( DB_class.cDNA_seq_cleaned )
@@ -262,14 +287,15 @@ def process_input( kwargs, MessageContainer ):
         assert ''.join([ n for n, a in seqlist_annotated ]) == DB_class.cDNA_seq_plus_i
 
         # final check: no cut sites appeared due to insertion of introns
-        cut_site2index_list = CSR_class.get_cut_site_indices( dna_seq = DB_class.cDNA_seq_plus_i )
-        if cut_site2index_list:
-            l = []
-            cut_site2enzyme = { v:k for k, v in DB_class.re_lookup_dict.items() }
-            cut_site2enzyme.update( { CO_class.reverse_complement( v ) : k for k, v in DB_class.re_lookup_dict.items() } )
-            for cut_site, index_found_at_list in cut_site2index_list.items():
-                l.append( 'cut site "{0}" ({1}) at the position(s): {2}'.format( cut_site, cut_site2enzyme[cut_site], index_found_at_list ) )
-            MessageContainer.messages[name].append( '[ WARNING ] The following cut sites appeared due to the insertion of introns: {0}'.format( l ) )
+        if not kwargs[ 'only_insert_introns' ]:
+            cut_site2index_list = CSR_class.get_cut_site_indices( dna_seq = DB_class.cDNA_seq_plus_i )
+            if cut_site2index_list:
+                l = []
+                cut_site2enzyme = { v:k for k, v in DB_class.re_lookup_dict.items() }
+                cut_site2enzyme.update( { CO_class.reverse_complement( v ) : k for k, v in DB_class.re_lookup_dict.items() } )
+                for cut_site, index_found_at_list in cut_site2index_list.items():
+                    l.append( 'cut site "{0}" ({1}) at the position(s): {2}'.format( cut_site, cut_site2enzyme[cut_site], index_found_at_list ) )
+                MessageContainer.messages[name].append( '[ WARNING ] The following cut sites appeared due to the insertion of introns: {0}'.format( l ) )
             
         # final check 2: spliced, translated seq is identical to input seq
         exon_list = DB_class.cDNA_seq_plus_i.split( II_class.intron_seq )
@@ -278,21 +304,34 @@ def process_input( kwargs, MessageContainer ):
             last_two_exons = exon_list[-1].split(intron_2_seq)
             exon_list = exon_list[:-1] + last_two_exons
         coding_dna = ''.join(exon_list)
-        if not CO_class.translate(coding_dna, DB_class.codon2aa_oneletter) == aa_seq or not str(Seq(coding_dna, IUPAC.unambiguous_dna).translate()) == aa_seq:
-            MessageContainer.messages[name].append( '[ ERROR ] The translation of the spliced optimized DNA sequence does not match the input AA sequence. MANUALLY VALIDATE OUTPUT!' )
+        if not kwargs[ 'only_insert_introns' ]:
+            if not CO_class.translate(coding_dna, DB_class.codon2aa_oneletter) == aa_seq or not str(Seq(coding_dna, IUPAC.unambiguous_dna).translate()) == aa_seq:
+                MessageContainer.messages[name].append( '[ ERROR ] The translation of the spliced optimized DNA sequence does not match the input AA sequence. MANUALLY VALIDATE OUTPUT!' )
+        else:
+            translated_intron_enriched_seq = CO_class.translate(coding_dna, DB_class.codon2aa_oneletter)
+            translated_input_seq = CO_class.translate(aa_seq, DB_class.codon2aa_oneletter)
+            translated_intron_enriched_seq_2 = str(Seq(coding_dna, IUPAC.unambiguous_dna).translate())
+            translated_input_seq_2 = str(Seq(aa_seq, IUPAC.unambiguous_dna).translate())
+            if not translated_intron_enriched_seq == translated_input_seq or not translated_intron_enriched_seq_2 == translated_input_seq_2:
+                MessageContainer.messages[name].append( '[ ERROR ] The translation of the spliced optimized DNA sequence does not match the translation of the input DNA sequence. MANUALLY VALIDATE OUTPUT!' )
+
 
         # add cut sites:
-        dna_seq_fine_tuned = kwargs[ 'cut_site_start' ] + DB_class.cDNA_seq_plus_i  + kwargs[ 'cut_site_end' ]
-        dna_seq_list_fine_tuned = list(dna_seq_list)
-        dna_seq_list_fine_tuned[ 0 ] = kwargs[ 'cut_site_start' ] + dna_seq_list_fine_tuned[ 0 ]
-        dna_seq_list_fine_tuned[ -1 ] = kwargs[ 'cut_site_end' ] + dna_seq_list_fine_tuned[ -1 ]
+        if kwargs[ 'only_insert_introns' ]:
+            dna_seq_fine_tuned = DB_class.cDNA_seq_plus_i
+            dna_seq_list_fine_tuned = list(dna_seq_list)
+        else:
+            dna_seq_fine_tuned = kwargs[ 'cut_site_start' ] + DB_class.cDNA_seq_plus_i  + kwargs[ 'cut_site_end' ]
+            dna_seq_list_fine_tuned = list(dna_seq_list)
+            dna_seq_list_fine_tuned[ 0 ] = kwargs[ 'cut_site_start' ] + dna_seq_list_fine_tuned[ 0 ]
+            dna_seq_list_fine_tuned[ -1 ] = kwargs[ 'cut_site_end' ] + dna_seq_list_fine_tuned[ -1 ]
         
-        # include cut sites into annotated seq
-        if kwargs[ 'cut_site_start' ]:
-            seqlist_annotated = [ (n, 'cut_site') for n in kwargs[ 'cut_site_start' ] ] + seqlist_annotated
-        if kwargs[ 'cut_site_end' ]:
-            seqlist_annotated = seqlist_annotated + [ (n, 'cut_site') for n in kwargs[ 'cut_site_end' ] ]
-        assert ''.join([ n for n, a in seqlist_annotated ]) == dna_seq_fine_tuned
+            # include cut sites into annotated seq
+            if kwargs[ 'cut_site_start' ]:
+                seqlist_annotated = [ (n, 'cut_site') for n in kwargs[ 'cut_site_start' ] ] + seqlist_annotated
+            if kwargs[ 'cut_site_end' ]:
+                seqlist_annotated = seqlist_annotated + [ (n, 'cut_site') for n in kwargs[ 'cut_site_end' ] ]
+            assert ''.join([ n for n, a in seqlist_annotated ]) == dna_seq_fine_tuned
             
         # create genbank file:
         GB_class = class_library.MakeGenbank()
@@ -439,6 +478,7 @@ if __name__ == '__main__':
     parser.add_argument("--target", help='target intermediate length for automatic intron position determination (default=450)', type=int, default=450)
     parser.add_argument("--max", help='max intermediate exon length for automatic intron position determination (default=500)', type=int, default=500)
     parser.add_argument("--end", help='end exon length for automatic intron position determination (default=100)', type=int, default=100)
+    parser.add_argument("--only_insert_introns", help='if specified, ONLY introns are inserted - requires a DNA sequence as input!', action="store_true")
     parser.add_argument("--cut_site_start", help='cut site to introduce at the start/5-end, e.g. None or custom or TCTAGA or CTCGAG or ... (default=None)', type=str, default='None')
     parser.add_argument("--custom_cut_site_start", help='custom cut site to introduce at the start/5-end given by this DNA sequence, e.g. TCTAGA; only active if "--cut_site_start custom" is called.', type=str)
     parser.add_argument("--cut_site_end", help='cut site to introduce at the end/3-end, e.g. None or custom or TCTAGA or CTCGAG or ... (default=None)', type=str, default='None')
