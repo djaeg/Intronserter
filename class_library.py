@@ -329,7 +329,11 @@ class CutSiteRemover():
         self.cut_site_list = sorted( set( self.cut_site_list ) )
         self.codon2aa = codon2aa
         self.aa2codon_freq_list = aa2codon_freq_list
-        self.max_cut_site_len = max([len(c) for c in self.cut_site_list])
+        if self.cut_site_list:
+            self.max_cut_site_len = max([len(c) for c in self.cut_site_list])
+        else:
+            self.max_cut_site_len = None
+        self.log_dict = {}
         return
     
     def substring_indexes( self, substring, string ):
