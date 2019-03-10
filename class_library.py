@@ -835,8 +835,6 @@ class MakeGenbank():
             join_list.append( ( l[0] + 1, l[-1] + 1 ) ) # +1, because python-index-coordinates into gb-coordinates
         return join_list
     
-    
-    
     def convert_start_end_into_join(self, start_end_list):
         if not start_end_list:
             s = ''
@@ -850,35 +848,55 @@ class MakeGenbank():
             s = 'join({0})'.format( ','.join(l) )
         return s
     
-    
-    
-    def get_feature_string(self, position, label, feature_type = 'CDS'):
+    def get_feature_string(self, position, label, feature_type = 'CDS', translation=''):
         if not position:
             s = ''
+        elif not translation:
+            s = '''     {feature_type}{position}
+                     /label="{label}"'''
+            s = s.format(feature_type = '{0:16}'.format(feature_type), position=position, label=label)
         else:
             s = '''     {feature_type}{position}
-                        /label="{label}"'''
-            s = s.format(feature_type = '{0:16}'.format(feature_type), position = position, label = label)
+                     /label="{label}"
+                     /translation="{translation}"'''
+            s = s.format(feature_type = '{0:16}'.format(feature_type), position=position, label=label, translation=translation)
         return s
-    
-    
 
-    def generate_gb_string(self, aa_seq, seqlist_annotated, fasta_name = 'unnamed_input_seq', intron_name_seq_list = None):        
+    def get_translation_string(self, aa_seq):
+        breaks_list = [ 44 + 58 * i for i in range(100) ]
+        translation = ''
+        for i, aa in enumerate(aa_seq):
+            if i in breaks_list:
+                translation += os.linesep + ' '*21
+            translation += aa
+        return translation
+    
+    def _translate(self, dna_seq, codon2aa, CO_class):
+        cds = SeqRecord( Seq(dna_seq, IUPAC.unambiguous_dna) )
+        translation = CO_class.translate(dna_seq, codon2aa)
+        assert cds.translate().seq == translation
+        return translation
+
+    def generate_gb_string(self, aa_seq, seqlist_annotated, codon2aa, CO_class, fasta_name = 'unnamed_input_seq', intron_name_seq_list = None):
         dna_seq_fine_tuned = ''.join([ n for n, annotation in seqlist_annotated ])
         if intron_name_seq_list == None:
             intron_name_seq_list = [ ('intron', '') ]
         start_list, linker_start_list, cds_list, intron_list, linker_end_list, stop_list = [], [], [], [], [], []
+        cds_translation, linker_start_translation, linker_end_translation = '', '', ''
         for i, (n, annotation) in enumerate(seqlist_annotated):
             if annotation == 'Start':
                 start_list.append(i)
             elif annotation == "5'-Linker":
                 linker_start_list.append(i)
+                linker_start_translation += n
             elif annotation == 'CDS':
                 cds_list.append(i)
+                cds_translation += n
             elif annotation == 'intron':
                 intron_list.append(i)
             elif annotation == "3'-Linker":
                 linker_end_list.append(i)
+                linker_end_translation += n
             elif annotation == 'Stop':
                 stop_list.append(i)
                 
@@ -886,12 +904,18 @@ class MakeGenbank():
             start_list = self.convert_position_list_into_start_end(start_list)
         if linker_start_list:
             linker_start_list = self.convert_position_list_into_start_end(linker_start_list)
+            linker_start_translation = self.get_translation_string(
+                self._translate(linker_start_translation, codon2aa=codon2aa, CO_class=CO_class))
         if cds_list:
             cds_list = self.convert_position_list_into_start_end(cds_list)
+            cds_translation = self.get_translation_string(
+                self._translate(cds_translation, codon2aa=codon2aa, CO_class=CO_class))
         if intron_list:
             intron_list = self.convert_position_list_into_start_end(intron_list)
         if linker_end_list: 
             linker_end_list = self.convert_position_list_into_start_end(linker_end_list)
+            linker_end_translation = self.get_translation_string(
+                self._translate(linker_end_translation, codon2aa=codon2aa, CO_class=CO_class))
         if stop_list:
             stop_list = self.convert_position_list_into_start_end(stop_list)
             
@@ -900,15 +924,7 @@ class MakeGenbank():
             intron_name_list = [ intron_name_seq_list[0][0] for _ in intron_list ]
             if len(intron_name_seq_list) == 2:
                 intron_name_list[-1] = intron_name_seq_list[1][0]
-        
-        # prepare translation string
-        breaks_list = [ 44 + 58 * i for i in range(100) ]
-        translation = ''
-        for i, aa in enumerate( aa_seq ):
-            if i in breaks_list:
-                translation += os.linesep + ' '*21
-            translation += aa
-        
+
         # prepare dna string
         origin = ''
         for i, nt in enumerate( dna_seq_fine_tuned ):
@@ -955,18 +971,26 @@ ORIGIN
 {origin}
 //
 '''
-        genbank_string = s.format( translation = translation,
+        genbank_string = s.format(
+            translation = cds_translation,
             origin = origin,
             fasta_name = fasta_name,
-            length = len( dna_seq_fine_tuned ),
+            length = len(dna_seq_fine_tuned),
             cds_list = self.convert_start_end_into_join(cds_list),
             scaffold = 'CIoptDNA',
             date = '{0}'.format( datetime.date.today() ),
-            intron_string = os.linesep.join( [ self.get_feature_string(position=self.convert_start_end_into_join([intron]), label=intron_name_list[i], feature_type='intron') for i, intron in enumerate(intron_list) ] ),
-            linker_start = self.get_feature_string(position=self.convert_start_end_into_join(linker_start_list), label='5-linker'),
-            linker_end = self.get_feature_string(position=self.convert_start_end_into_join(linker_end_list), label='3-linker'),
-            start = self.get_feature_string(position=self.convert_start_end_into_join(start_list), label='start'),
-            stop = self.get_feature_string(position=self.convert_start_end_into_join(stop_list), label='stop'),
+            intron_string = os.linesep.join(
+                [ self.get_feature_string(position=self.convert_start_end_into_join([intron]), label=intron_name_list[i], feature_type='intron')
+                  for i, intron in enumerate(intron_list) ]
+            ),
+            linker_start = self.get_feature_string(
+                position=self.convert_start_end_into_join(linker_start_list), label='5-linker', translation=linker_start_translation),
+            linker_end = self.get_feature_string(
+                position=self.convert_start_end_into_join(linker_end_list), label='3-linker', translation=linker_end_translation),
+            start = self.get_feature_string(
+                position=self.convert_start_end_into_join(start_list), label='start', translation='M'),
+            stop = self.get_feature_string(
+                position=self.convert_start_end_into_join(stop_list), label='stop', translation='*'),
             )
         genbank_string = os.linesep.join([s for s in genbank_string.splitlines() if s]) #remove empty lines from string
         return genbank_string
@@ -978,20 +1002,21 @@ ORIGIN
             fp.write(gb_string)
             fp.seek(0)
             seq_record = SeqIO.read(fp, "genbank")
-            translation = None
+            translation_list = []
             start_end_list = []
             for feature in seq_record.features:
                 if feature.type == 'CDS':
                     if 'translation' in feature.qualifiers:
-                        translation_list = feature.qualifiers['translation']
-                        assert len(translation_list) == 1
-                        translation = translation_list[0]
+                        assert len(feature.qualifiers['translation']) == 1
+                        translation_list.append( (feature.location.start, feature.qualifiers['translation'][0]) )
                     for exon in feature.location.parts:
                         start_end_list.append( (exon.start, exon.end) )
             start_end_list.sort()
             cds = SeqRecord( Seq('', IUPAC.unambiguous_dna) )
             for start, end in start_end_list:
                 cds += seq_record.seq[ start : end ]
+        translation_list.sort()
+        translation = ''.join([ translation for start, translation in translation_list ])
         if cds.translate().seq == aa_seq and translation == aa_seq:
             return True
         else:

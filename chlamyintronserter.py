@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import collections
 import string
 import argparse
@@ -339,7 +340,9 @@ def process_input( kwargs, MessageContainer ):
             aa_seq = DB_class.aa_seq,
             fasta_name = name,
             intron_name_seq_list = kwargs[ 'intron_name_seq_list' ],
-            seqlist_annotated = seqlist_annotated
+            seqlist_annotated = seqlist_annotated,
+            codon2aa = DB_class.codon2aa_oneletter,
+            CO_class = CO_class,
         )
         if not GB_class.check_gb(aa_seq = DB_class.aa_seq, gb_string = output_dict[ name ][ 'genbank_string' ]):
             MessageContainer.messages[name].append( '[ ERROR ] The annotation or sequence itself in the generated GenBank is not identical to the input amino acid sequence. MANUALLY VALIDATE OUTPUT!' )
@@ -355,9 +358,9 @@ def process_input( kwargs, MessageContainer ):
 
         LogClass = class_library.PrepareLog()
         output_dict[ name ][ 'session_logs' ] = (
-            '<h2>Processed Input Parameters were:</h2><ul><li>' + '</li><li>'.join([str(_) for _ in kwargs.items()]) + '</li></ul>',
-            '<h2>Cut Site Removal in codon-optimized cDNA sequence for {0}</h2>'.format(name) + LogClass.cut_site_removal_log( log_dict = CSR_class.log_dict ),
-            '<h2>Intron insertion into codon-optimized and cut-site-removed cDNA sequence for {0}</h2>'.format(name) + LogClass.intron_insertion_log( log_dict = II_class.log_dict )
+            '<ul><li>' + '</li><li>'.join([str(_) for _ in kwargs.items()]) + '</li></ul>',
+            LogClass.cut_site_removal_log( log_dict = CSR_class.log_dict ),
+            LogClass.intron_insertion_log( log_dict = II_class.log_dict )
             )
 
     kwargs[ 'output_dict' ] = output_dict
@@ -418,7 +421,7 @@ def get_html_strings():
             <tr>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>
-                    <a href="data:application/text;base64,{gb_base64}"><b>Download optimized DNA sequence in GenBank format</b></a>&nbsp;(should work for Firefox and Chrome, but does <u>not</u> for Internet Explorer)
+                    <a download="{gb_fname}" href="data:application/text;base64,{gb_base64}"><b>Download optimized DNA sequence in GenBank format</b></a>&nbsp;(should work for Firefox and Chrome, but does <u>not</u> for Internet Explorer)
                 </td>
             </tr>
         </table>
@@ -445,8 +448,14 @@ def get_html_strings():
     </p>
     <button onclick="show_log_{i}()"><b>Show log of optimization process</b></button>
     <div id="logDIV{i}" style="display:none;">
+        <h2>Call of ChlamyIntronserter</h2>
+        <p><b>Call:</b><br>{call}</p>
+        <p><b>Respective content of FASTA file:</b><br>{fasta_content}</p>
+        <h2>Processed Input Parameters</h2>
         <p>{params}</p>
+        <h2>Cut Site Removal in codon-optimized cDNA sequence for {header}</h2>
         <p>{csr}</p>
+        <h2>Intron insertion into codon-optimized and cut-site-removed cDNA sequence for {header}</h2>
         <p>{ii}</p>
         <button onclick="show_log_{i}()"><b>Hide detailed log</b></button>
     </div>
@@ -542,6 +551,12 @@ if __name__ == '__main__':
                     x.style.display = "none";
                 }}
             }}'''
+
+    i2fasta = {}
+    with open(ArgsClass.aa_fasta_file, 'rU') as fin:
+        for i, record in enumerate(SeqIO.parse(fin, "fasta")):
+            i2fasta[i] = record.seq.upper()
+
     with open( '{0}.html'.format(ArgsClass.output_prefix), 'w' ) as fout:
         print(base.format(
                 functions = os.linesep.join([function_template.format(i=i) for i in range(len(kwargs['aa_seq_dict']))])
@@ -561,9 +576,12 @@ if __name__ == '__main__':
                     gb_base64=base64.b64encode(kwargs[ 'output_dict' ][ name ][ 'genbank_string' ].encode()).decode(),
                     fig_normfreq =kwargs[ 'output_dict' ][ name ][ 'fig_tmp' ],
                     fig_exonintron =kwargs[ 'output_dict' ][ name ][ 'fig_tmp_introns' ],
+                    call=sys.argv,
+                    fasta_content=i2fasta[i],
                     params=kwargs[ 'output_dict' ][ name ][ 'session_logs' ][0],
                     csr=kwargs[ 'output_dict' ][ name ][ 'session_logs' ][1],
                     ii=kwargs[ 'output_dict' ][ name ][ 'session_logs' ][2],
+                    gb_fname=gb_file
                 ),
                 file=fout
             )
