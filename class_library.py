@@ -293,9 +293,9 @@ class Tables():
 
         return
 
-    def parse_fasta( self, fasta_seq ):
+    def parse_fasta( self, fasta_seq, default_name='unnamed_input_seq' ):
         seq_dict = collections.OrderedDict()
-        name = 'unnamed_input_seq'
+        name = default_name
         newline = '{0}{1}'.format( chr(13), chr(10) )
         if not newline in fasta_seq:
             newline = '{0}'.format( chr(10) )

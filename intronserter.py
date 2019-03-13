@@ -52,9 +52,24 @@ def parse_input( ArgsClass, MessageContainer ):
     TMP = class_library.Tables( '' )
     intron_name_seq_list = []
 
+    # update 13.03.2019: SeqIO.parse does not iterate when FASTA file contains no ">name" as first line, but only seq ...
+    default_name = 'unnamed_input_seq'
+    invalid_fasta = False
+    with open(ArgsClass.aa_fasta_file, 'rU') as fin:
+        for i, line in enumerate(fin):
+            if i == 0:
+                if not line.startswith(">"):
+                    invalid_fasta = True
+    if invalid_fasta:
+        with open(ArgsClass.aa_fasta_file, 'rU') as fin:
+            s = fin.read()
+        with open(ArgsClass.aa_fasta_file, 'w') as fout:
+            print('>{0}'.format(default_name), file=fout)
+            print(s, file=fout)
+
     # validate the parsed fasta seq by comparison against Biopython
     with open(ArgsClass.aa_fasta_file, 'rU') as fin:
-        aa_seq_dict = TMP.parse_fasta( fin.read() )
+        aa_seq_dict = TMP.parse_fasta( fin.read(), default_name=default_name )
         fin.seek(0)
         for (name, seq), record in zip(aa_seq_dict.items(), SeqIO.parse(fin, "fasta")):
             #record.name == name is FALSE when the header contains any white spaces - white spaces are removed by Biopython
@@ -66,19 +81,19 @@ def parse_input( ArgsClass, MessageContainer ):
     assert sorted([ TMP.AA_lookup_dict[k]['1-letter'] for k in TMP.AA_lookup_dict ]) == sorted(allowed_characters)
     allowed_characters_DNA = IUPAC.unambiguous_dna.letters
     for name, seq in aa_seq_dict.items():
+        MessageContainer.messages[name] = []
         if ArgsClass.only_insert_introns:
             if not set(seq).issubset(allowed_characters_DNA):
-                MessageContainer.messages['global'].append('[ ERROR ] You specified --only_insert_introns, but your FASTA sequence {0} contains invalid characters. Allowed characters for this option are {1}'.format(name, sorted(allowed_characters_DNA)))
+                MessageContainer.messages[name].append('[ ERROR ] You specified --only_insert_introns, but your FASTA sequence {0} contains invalid characters. Allowed characters for this option are {1}'.format(name, sorted(allowed_characters_DNA)))
                 aa_seq_dict[name] = ''
         else:
             if not set(seq).issubset(allowed_characters):
-                MessageContainer.messages['global'].append('[ ERROR ] Your FASTA sequence {0} contains invalid characters. Allowed characters are {1}'.format(name, sorted(allowed_characters)))
+                MessageContainer.messages[name].append('[ ERROR ] Your FASTA sequence {0} contains invalid characters. Allowed characters are {1}'.format(name, sorted(allowed_characters)))
                 aa_seq_dict[name] = ''
 
     # check if aa- or cDNA-seq:
     allowed_characters = set('ATCG')
     for name, seq in aa_seq_dict.items():
-        MessageContainer.messages[name] = []
         if seq and set(seq).issubset(allowed_characters):
             if len(seq) % 3 != 0:
                 MessageContainer.messages[name].append( '[ ERROR ] Your input sequence "{0}" seems to be a cDNA sequence, but its length is not a multiplier of 3! Please re-submit a valid sequence, preferably as amino acids.'.format(name) )
