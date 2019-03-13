@@ -1,1 +1,1239 @@
-here comes the tool description.
+<?xml version="1.0" encoding="UTF-8"?>
+<runnableItem xmlns="bibiserv:de.unibi.techfak.bibiserv.cms"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="bibiserv:de.unibi.techfak.bibiserv.cms http://bibiserv.techfak.uni-bielefeld.de/xsd/bibiserv2/BiBiServAbstraction.xsd" id="intronserter">
+    <name>Intronserter</name>
+    <shortDescription>Intronserter is  a tool for transgene optimization for nuclear expression in Chlamydomonas reinhardtii.</shortDescription>
+    <description>Welcome to 
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            Intronserter
+        </strong> 
+        - a tool for 
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            systematic integration
+        </strong> 
+        of  
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            introns 
+        </strong> 
+        into  
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            transgenes.
+        </strong>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        This tool was developed to provide a user-friendly platform for the design 
+        of optimized intron-containing transgenes. 
+    </description>
+    <responsibleAuthor>
+        <firstname>Daniel</firstname>
+        <lastname>Jaeger</lastname>
+        <email>djaeger61@gmx.de</email>
+    </responsibleAuthor>
+    <support>
+        <firstname>Jan</firstname>
+        <lastname>Krueger</lastname>
+        <email>jkrueger@cebitec.uni-bielefeld.de</email>
+    </support>
+    <references>
+        <reference>@article{jae:2019,
+            author={Jaeger, D. and  Baier, T. and  Lauersen, K. J. },
+            title={Intronserter ... - tba},
+            year={2019},
+            journal={tba},
+            doi={tba}
+            }</reference>
+        <reference>@article{bai:2018,
+            author={Baier, T. and  Wichmann, J. and  Kruse, O. and  Lauersen, K. J. },
+            title={ Intron-containing algal transgenes mediate efficient recombinant gene expression in the green microalga Chlamydomonas reinhardtii.},
+            year={2018},
+            journal={Nucleic Acids Research},
+            doi={10.1093/nar/gky532}
+            }</reference>
+    </references>
+    
+    <customContent> 
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <img xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" src="images/intronserter_logo.png" alt="Intronserter Logo"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        Incorporation of regulatory introns into cDNA has been shown in numerous 
+        eukaryotes to improve relative expression levels of transgenes. 
+        In the model green microalga 
+        <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            Chlamydomonas reinhardtii,
+        </em> spreading of introns 
+        systematically throughout a transgene to minimize exon lengths has been 
+        shown necessary to enable robust expression from its nuclear genome.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        This webtool provides a step-by-step service for full codon optimization 
+        and intron spreading in target transgenes to remove the guess-work from gene design.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        See the 
+        <a xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" href="/intronserter?id=intronserter_manual">
+            Manual
+        </a> 
+        to find out how it works. 
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        Note that gene synthesis of the optimized DNA sequence is necessary.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            Please cite in your materials and methods section:
+        </strong>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        "The sequence was optimized based on the strategy 
+        described in Baier et al, 2018, with the tool described in Jaeger et al, 2019." 
+        (see <a xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" href="/intronserter?id=references">References</a>)
+    </customContent>
+    
+    <executable>
+        
+        <version>1.0</version>
+        <execInfo>
+            <path/>
+            <callingInformation>intronserter.sh</callingInformation>
+        </execInfo>
+        <input id="intronserter_input">
+            <name>Amino Acid sequence</name>
+            <shortDescription>in FASTA format</shortDescription>
+            <description>Amino Acid sequence in FASTA format that is converted by Intronserter to 
+                its optimized DNA counterpart. For an example, click on the corresponding button below.</description>
+            <type>ToolDependentRepresentation</type>
+            <handling>FILE</handling>
+            <option/>
+        </input>
+        <input id="intronserter_codon_table">
+            <name>User defined codon usage table</name>
+            <shortDescription>in NCBI's standard genetic code definition available for instance at HIVE-CUT</shortDescription>
+            <description>User defined codon usage table, supplied in the standard codon usage table format / 
+                in NCBI's standard genetic code definition,
+                found for instance at
+                <a xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" href="http://www.kazusa.or.jp/codon/cgi-bin/showcodon.cgi?species=3055">Kazusa</a>
+                or
+                <a xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" href="https://hive.biochemistry.gwu.edu/review/codon">HIVE-CUT</a>
+                .  For an example, click on the corresponding button below.
+            </description>
+            <type>ToolDependentRepresentation</type>
+            <handling>FILE</handling>
+            <option>--custom_codon_usage_table_file </option>
+        </input>
+        <input id="intronserter_dna_seq">
+            <name>DNA sequence</name>
+            <shortDescription>in FASTA format</shortDescription>
+            <description>DNA sequence in FASTA format into which introns are inserted by 
+                Intronserter. Note that by using this option, only step 3 = intron insertion
+                is performed, and step 1 (codon optimization), step 2 (cut site removal) and
+                step 4 (fine tuning) are skipped. This is intentionally done to leave your
+                input DNA sequence untouched, i.e. to assure that your input DNA sequence, 
+                which might have been optimized by other means, e. g. for optimal mRNA 
+                structure, is not altered by Intronserter, except for intron insertion.
+                For an example, click on the corresponding button below.</description>
+            <type>ToolDependentRepresentation</type>
+            <handling>FILE</handling>
+            <option/>
+        </input>
+        
+        <output id="intronserter_ouput">
+            <name>Output</name>
+            <shortDescription></shortDescription>
+            <description></description>
+            <type>ToolDependentRepresentation</type>
+            <handling>STDOUT</handling>
+        </output>
+        
+        <outputfile id="intronserter_genbank">
+          <name>GenBank file</name>
+          <filename>Intronserter_optDNA.gb</filename>
+          <contenttype>plain/text</contenttype>
+        </outputfile>
+        
+        <outputfile id="intronserter_html">
+          <name>HTML file</name>
+          <filename>Intronserter_optDNA.html</filename>
+          <contenttype>text/html</contenttype>
+        </outputfile>
+        
+        <param id="chlain_param_2_2">
+            <name>If "--custom--" was chosen, remove additional user defined restriction digest recognition sites</name>
+            <shortDescription>Enter any number of DNA sequences, separated by comma, e.g. "TCTAGA,CTCGAG" (just the comma-separated sequences, without any line breaks). 
+Note that the length of each sequence must be of either 6 or 8 nt.
+Note further that this parameter is only active when "--custom--" was chosen above.</shortDescription>
+            <description>If "--custom--" was chosen as a restriction digest site to be removed,
+                use this parameter to supply your restriction digest recogition sites that
+                should be removed from the DNA sequence. Note that the length of each recognition sequence 
+                must be of either 6 or 8 nt; other lengths are 
+                <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">not</strong> 
+                supported.</description>
+            <type>string</type>
+            <option>--custom_cut_sites </option>
+            <regexp>[AaCcGgTt,]+</regexp>
+            <guiElement>INPUTTEXTAREA</guiElement>
+        </param>
+        
+        <param id="chlain_param_3_1_2_2_1">
+            <name>Start region exon length</name>
+            <shortDescription>Start region exon length for automatic insertion (lesser equals)</shortDescription>
+            <description>Start region exon length for automatic insertion (lesser equals) (see figure 2 above).</description>
+            <type>int</type>
+            <option>--start </option>
+            <defaultValue>100</defaultValue>
+            <min included="true">1</min>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        <param id="chlain_param_3_1_2_2_2">
+            <name>Target exon length</name>
+            <shortDescription>Target exon length for automatic insertion (about)</shortDescription>
+            <description>Target exon length for automatic insertion (about) (see figure 2 above).</description>
+            <type>int</type>
+            <option>--target </option>
+            <defaultValue>450</defaultValue>
+            <min included="true">1</min>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        <param id="chlain_param_3_1_2_2_3">
+            <name>Max exon length</name>
+            <shortDescription>Max exon length for automatic insertion (lesser equals)</shortDescription>
+            <description>Max exon length for automatic insertion (lesser equals) (see figure 2 above).</description>
+            <type>int</type>
+            <option>--max </option>
+            <defaultValue>500</defaultValue>
+            <min included="true">1</min>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        <param id="chlain_param_3_1_2_2_4">
+            <name>End region exon length</name>
+            <shortDescription>End region exon length for automatic insertion (lesser equals)</shortDescription>
+            <description>End exon length for automatic insertion (lesser equals) (see figure 2 above).</description>
+            <type>int</type>
+            <option>--end </option>
+            <defaultValue>100</defaultValue>
+            <min included="true">1</min>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        
+        <param id="chlain_param_3_1_2_0">
+            <name>Supersede automatic intron insertion process</name>
+            <shortDescription>If the checkbox below is activated, the automatic intron position determination is switched off. 
+Instead, the positions supplied on the rigth are used. 
+This is useful for other species, for instance when only one single intron at the end of the sequences should be inserted.</shortDescription>
+            <description>This parameter is to force the utilization of a manual intron position list. If activated,
+            the automatic intron position determination is switched off and the supplied positions are used 
+            instead. This is useful for other species, for instance when only one single intron at the end 
+                of the sequences should be inserted.</description>
+            <type>boolean</type>
+            <option>--supersede_intron_insert </option>
+            <guiElement>SELECTBOOLEANCHECKBOX</guiElement>
+        </param>
+        
+        <param id="chlain_param_3_1_2_1">
+            <name>User defined intron insertion position list</name>
+            <shortDescription>Supply any number of positions (in nt coordinates), separated by comma, where introns will be inserted.
+Entering for instance "100,550,1000,1450" will introduce four introns at the defined positions - of course only if the above defined nucleotide pair, e.g. "G^G", is found at these positions; otherwise, the positions are slightly varied until the defined nucleotide pair is found.
+Note that this parameter is only active if the checkbox on the left is activated.</shortDescription>
+            <description>If manually provided positions should be used instead, forced by the parameter 
+            "Supersede automatic intron insertion process",
+            the positions defined here are used instead.
+            Positions have to supplied as a comma-separated list of integer values.
+            Note that the positions have to be provided in nt coordinates, not in 
+            amino acid coordinates.
+            Note further that the positions might not be matched exactly, but only approximately, 
+            which is the case when the nucleotide pair, e.g. "G^G", cannot be found at these 
+            positions.</description>
+            <type>string</type>
+            <option>--manual_intron_positions </option>
+            <regexp>[\d,]+</regexp>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        
+        <param id="chlain_param_3_2_2">
+            <name>Intron sequence to be inserted</name>
+            <shortDescription>Enter the DNA sequence that should be used for each intron  (just the sequence, without any line breaks).
+Note that the default is the *first* intron of rbcS2 of C. reinhardtii.</shortDescription>
+            <description>The intron sequence that is inserted into the cDNA sequence.
+            The default is the <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">first</strong> 
+            intron of <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">rbcS2</em> of 
+            <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">C. reinhardtii</em> 
+            (or briefly, <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">rbcS2i1</strong>).
+            </description>
+            <type>string</type>
+            <option>--intron_seq </option>
+            <defaultValue>gtgagtcgacgagcaagcccggcggatcaggcagcgtgcttgcagatttgacttgcaacgcccgcattgtgtcgacgaaggcttttggctcctctgtcgctgtctcaagcagcatctaaccctgcgtcgccgtttccatttgcag</defaultValue>
+            <maxLength>1000</maxLength>
+            <regexp>[AaCcGgTt]+</regexp>
+            <guiElement>INPUTTEXTAREA</guiElement>
+        </param>
+        
+        <param id="chlain_param_3_3_1">
+            <name>Optional: substitute the last intron for the below defined second sequence</name>
+            <shortDescription>Activate this checkbox to substitue the last intron for a second sequence, e.g. to substitute the last intron for rbcS2 intron 2.
+Don't forget to specify the DNA sequence of the last intron below.</shortDescription>
+            <description>Use this option to substitute the last intron for a different intron sequence,
+            such as the <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">second</strong> 
+            intron of <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">rbcS2</em> of 
+            <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">C. reinhardtii</em> 
+            (or briefly, <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">rbcS2i2</strong>). 
+            This option is recommend in C-terminal fusions in the pOptimized vector toolkit 
+            (see Baier et al, 2018), and for other vectors (see figure 3 above).</description>
+            <type>boolean</type>
+            <option>--intron_lastdifferent </option>
+            <guiElement>SELECTBOOLEANCHECKBOX</guiElement>
+        </param>
+        
+        <param id="chlain_param_3_3_2">
+            <name>If "substitute last intron" was activated, user defined last intron sequence</name>
+            <shortDescription>Enter the DNA sequence of the last intron (just the sequence, without any line breaks). 
+Note that this parameter is only active if the checkbox above is active.
+Note further that the default is the *second* intron of rbcS2 of C. reinhardtii.</shortDescription>
+            <description>Intron DNA sequence of the last intron, if it should be substituted.
+            The default is the <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">second</strong> 
+            intron of <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">rbcS2</em> of 
+            <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">C. reinhardtii</em>.</description>
+            <type>string</type>
+            <option>--intron_lastdifferent_seq </option>     
+            <defaultValue>gtgagcttgcggggttgcgagcaacactccagcaacgaacagtgcccaagtcaggaatctgcagtcagcctgggctttcggcggctttttcttgggcaaacagcttgcactcatgccagcgcggcttgtccagcctcacttgagctttccagctgctaccagccgggctatacgacagcgacagagccatagcgtggaatcacttatttgggttgccgaagtagcggtcggagcgtgagttcttggtcaagccgccccttatccggttcctgtccgtgtctttgtccctcgttcacccttcgcggcacccttcatccccttgcttgcag</defaultValue>
+            <maxLength>1000</maxLength>
+            <regexp>[AaCcGgTt]+</regexp>
+            <guiElement>INPUTTEXTAREA</guiElement>
+        </param>
+        
+        <param id="chlain_param_3_4_1">
+            <name>DNA sequence input - only insert introns</name>
+            <shortDescription>Activate this checkbox to only perform step 3 (insert introns),
+and skip step 1 (codon optimization), step 2 (cut site removal) and 
+step 4 (fine tuning). </shortDescription>
+            <description>Use this option to 
+                <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">only insert introns (step 3)</strong>, 
+                and not do any other optimzation steps. 
+                With this option, codon optimzation (step 1), 
+                cut site removal (step 2) and fine-tuning (step 4) are not performed.</description>
+            <type>boolean</type>
+            <option>--only_insert_introns </option>
+            <defaultValue>True</defaultValue>
+            <guiElement>SELECTBOOLEANCHECKBOX</guiElement>
+        </param>
+                
+        <param id="chlain_param_4_1_2">
+            <name>User defined nucleotide addition (DNA)</name>
+            <shortDescription>Enter a single DNA sequence, e.g. the recognition site "GGATCC", that should be inserted at the start / 5'-end.
+Leave empty if no nucleotides should be added.
+Note that this parameter is only active if "--custom--" was chosen on the left.</shortDescription>
+            <description>User defined nucleotide addition of any length that will be introduced at the 
+                <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">5'</strong>-end, 
+                such as a restriction digest recognition site, e.g. "GGATCC".</description>
+            <type>string</type>
+            <option>--custom_cut_site_start </option>
+            <regexp>[AaCcGgTt]+</regexp>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        
+        <param id="chlain_param_4_1_3">
+            <name>Start codon insertion</name>
+            <shortDescription>Activate this checkbox to insert a heading start codon (ATG, amino acid M) at the start / 5'-end.</shortDescription>
+            <description>Use this option to insert a heading start codon (ATG, amino acid M) 
+                at the <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">5'</strong>-end 
+                of the sequence.</description>
+            <type>boolean</type>
+            <option>--insert_start_codon </option>
+            <guiElement>SELECTBOOLEANCHECKBOX</guiElement>
+        </param>
+        
+        <param id="chlain_param_4_1_5">
+            <name>Linker peptide (amino acid sequence)</name>
+            <shortDescription>Enter a single AA sequence, e.g. the linker "GSGS", that should be inserted at the start / 5'-end.
+Leave empty if no linker peptide should be added.</shortDescription>
+            <description>User defined amino acid sequence of any length that will be introduced
+            at the <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">5'</strong>-end, 
+            such as the peptide linker "GSGS".
+            Note that the additionally introduced amino acids are considered during the intron insertion 
+            process.</description>
+            <type>string</type>
+            <option>--linker_start </option>
+            <maxLength>50</maxLength>
+            <regexp>[AaRrNnDdCcEeQqGgHhIiLlKkMmFfPpSsTtWwYyVv]+</regexp>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        
+        <param id="chlain_param_4_1_6">
+            <name>Start codon removal</name>
+            <shortDescription>Activate this checkbox to remove the native start codon (M, Met) of the input sequence.</shortDescription>
+            <description>Use this option to remove the native "start codon" (M, Met) of the input 
+                amino acid sequence.</description>
+            <type>boolean</type>
+            <option>--remove_start_codon </option>
+            <guiElement>SELECTBOOLEANCHECKBOX</guiElement>
+        </param>    
+          
+        <param id="chlain_param_4_2_1">
+            <name>Remove stop codon</name>
+            <shortDescription>Activate this checkbox to remove the native * stop codon of the input sequence.
+Note that this parameter is automatically activated if you request a linker peptide at the 3'-end.</shortDescription>
+            <description>Use this option to remove the native "stop codon" (*) of the input
+                amino acid sequence.
+                Note that this option is automatically activated if you request a linker peptide at the 3'-end,
+                in order to avoid accidental premature translation termination.</description>
+            <type>boolean</type>
+            <option>--remove_stop_codon </option>
+            <guiElement>SELECTBOOLEANCHECKBOX</guiElement>
+        </param>
+        
+        <param id="chlain_param_4_2_3">
+            <name>Linker peptide (amino acid sequence)</name>
+            <shortDescription>Enter a single AA sequence, e.g. the linker "GSGS", that should be appended to the 3'-end.
+Leave empty if no linker peptide should be added.</shortDescription>
+            <description>User defined amino acid sequence of any length that will be appended 
+                to the <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">3'</strong>-end, 
+                such as the peptide linker "GSGS".
+                Note that the additionally introduced amino acids are considered during the intron insertion 
+                process.</description>
+            <type>string</type>
+            <option>--linker_end </option>
+            <maxLength>50</maxLength>
+            <regexp>[AaRrNnDdCcEeQqGgHhIiLlKkMmFfPpSsTtWwYyVv]+</regexp>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        
+        <param id="chlain_param_4_2_4">
+            <name>Stop codon insertion</name>
+            <shortDescription>Activate this checkbox to append a stop codon (TAA, TGA or TAG, amino acid *) at the 3'-end.
+Note that this parameter is ignored if you request a linker peptide at the 3' end.</shortDescription>
+            <description>Use this option to append a trailing stop codon (TAA, TGA or TAG, amino acid *) 
+                at the <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">3'</strong>-end 
+                of the sequence.
+                Note that this option is ignored if you request a linker peptide at the 3'-end,
+                in order to avoid accidental premature translation termination.</description>
+            <type>boolean</type>
+            <option>--insert_stop_codon </option>
+            <guiElement>SELECTBOOLEANCHECKBOX</guiElement>
+        </param>
+        
+        <param id="chlain_param_4_2_6">
+            <name>User defined nucleotide addition (DNA)</name>
+            <shortDescription>Enter a single DNA sequence, e.g. the recognition site "GGATCC", that should be appended to the 3'-end.
+Leave empty if no nucleotides should be added.
+Note that this parameter is only active if "--custom--" was chosen on the left.</shortDescription>
+            <description>User defined nucleotide addition of any length that will be appended to the 
+                <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">3'</strong>-end, 
+                such as a restriction digest recognition site, e.g. "GGATCC".</description>
+            <type>string</type>
+            <option>--custom_cut_site_end </option>
+            <regexp>[AaCcGgTt]+</regexp>
+            <guiElement>INPUTTEXT</guiElement>
+        </param>
+        
+        
+        
+        <enumParam id="chlain_enum_1_1">
+            <name>Codon optimize using codon usage table for</name>
+            <shortDescription>If you want to supply a custom codon usage table, go back twice and choose the second option.</shortDescription>
+            <description>Choose one of the two build-in codon usage tables for 
+                <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">C. reinhardtii</em>.
+                Recommended is the Kazusa codon usage table.
+                If you want to supply your own codon usage table, for instance if you are working 
+                with another species or manually derived a codon usage table from, e.g. the top 1000 expressed
+                genes from <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">C. reinhardtii</em>, 
+                you have to choose this directly from the beginning by using the second option. 
+            </description>
+            <type>string</type>
+            <option>--codon_usage_table_id </option>
+            <values defaultValue="true">
+                <key>kazusa</key>
+                <value>kazusa</value>
+                <name>C. reinhardtii based on the Kazusa database</name>
+            </values>
+            <values>
+                <key>hivecut</key>
+                <value>hivecut</value>
+                <name>C. reinhardtii based on the HIVE-CUT database</name>
+            </values>
+            <guiElement>SELECTONERADIO</guiElement>
+        </enumParam>
+        
+        <enumParam id="chlain_enum_2_1" maxoccurs="20" minoccurs="1">
+            <name>Remove the following restriction digest sites from back-translated sequence</name>
+            <shortDescription>Activate each restriction digest that that you want to be avoided in the optimized sequence.
+Note, by default, restriction sites are avoided which are used in pOptimized and MoClo vector kits.</shortDescription>
+            <description>All restriction digest sites that are checked are avoided in the 
+                optimized sequence. If your restriction digest site is not available in the build-in
+                options, you can activate the option "--custom--" and supply your restriction digest sites
+                to be avoided in the text area field below.</description>       
+            <type>string</type>        
+            <option>--cut_sites </option>
+            <separator>,</separator>
+            <values defaultValue="true">
+                <key>AatII</key>
+                <value>GACGTC</value>
+                <name>AatII</name>
+            </values>
+            <values defaultValue="true">
+                <key>AgeI</key>
+                <value>ACCGGT</value>
+                <name>AgeI</name>
+            </values>
+            <values defaultValue="true">
+                <key>AvrII</key>
+                <value>CCTAGG</value>
+                <name>AvrII</name>
+            </values>
+            <values defaultValue="true">
+                <key>BamHI</key>
+                <value>GGATCC</value>
+                <name>BamHI</name>
+            </values>
+            <values defaultValue="true">
+                <key>BbsI</key>
+                <value>GAAGAC</value>
+                <name>BbsI</name>
+            </values>
+            <values defaultValue="true">
+                <key>BglII</key>
+                <value>AGATCT</value>
+                <name>BglII</name>
+            </values>
+            <values defaultValue="true">
+                <key>BsaI</key>
+                <value>GGTCTC</value>
+                <name>BsaI</name>
+            </values>
+            <values defaultValue="true">
+                <key>EcoRI</key>
+                <value>GAATTC</value>
+                <name>EcoRI</name>
+            </values>                                
+            <values defaultValue="true">
+                <key>EcoRV</key>
+                <value>GATATC</value>
+                <name>EcoRV</name>
+            </values>
+            <values defaultValue="true">
+                <key>HindIII</key>
+                <value>AAGCTT</value>
+                <name>HindIII</name>
+            </values>
+            <values defaultValue="true">
+                <key>KpnI</key>
+                <value>GGTACC</value>
+                <name>KpnI</name>
+            </values>
+            <values defaultValue="true">
+                <key>MluI</key>
+                <value>ACGCGT</value>
+                <name>MluI</name>
+            </values>
+            <values defaultValue="true">
+                <key>NdeI</key>
+                <value>CATATG</value>
+                <name>NdeI</name>
+            </values>
+            <values defaultValue="true">
+                <key>ScaI</key>
+                <value>AGTACT</value>
+                <name>ScaI</name>
+            </values>
+            <values defaultValue="true">
+                <key>SmaI</key>
+                <value>CCCGGG</value>
+                <name>SmaI</name>
+            </values>
+            <values defaultValue="true">
+                <key>SpeI</key>
+                <value>ACTAGT</value>
+                <name>SpeI</name>
+            </values>
+            <values defaultValue="true">
+                <key>XhoI</key>
+                <value>CTCGAG</value>
+                <name>XhoI</name>
+            </values>
+            <values defaultValue="true">
+                <key>ZraI</key>
+                <value>GACGTC</value>
+                <name>ZraI</name>
+            </values>
+            <values>
+                <key>custom</key>
+                <value>custom</value>
+                <name>--custom--</name>
+            </values>
+            <guiElement>SELECTMANYCHECKBOX</guiElement>
+        </enumParam>
+        
+        <enumParam id="chlain_enum_3_1_1" minoccurs="1" maxoccurs="1">
+            <name>Nucleotide pair between which introns are inserted (default G^G)</name>
+            <shortDescription>Choose the nucleotide pair between which the introns are inserted.</shortDescription>
+            <description>The nucleotide pair where introns are inserted, by default between "G^G".</description>
+            <type>string</type>
+            <option>--nucleotide_pair </option>
+            <values>
+                <key>AA</key>
+                <value>AA</value>
+                <name>A^A</name>
+            </values>
+            <values>
+                <key>AC</key>
+                <value>AC</value>
+                <name>A^C</name>
+            </values>
+            <values>
+                <key>AG</key>
+                <value>AG</value>
+                <name>A^G</name>
+            </values>
+            <values>
+                <key>AT</key>
+                <value>AT</value>
+                <name>A^T</name>
+            </values>
+            <values>
+                <key>CA</key>
+                <value>CA</value>
+                <name>C^A</name>
+            </values>
+            <values>
+                <key>CC</key>
+                <value>CC</value>
+                <name>C^C</name>
+            </values>
+            <values>
+                <key>CG</key>
+                <value>CG</value>
+                <name>C^G</name>
+            </values>
+            <values>
+                <key>CT</key>
+                <value>CT</value>
+                <name>C^T</name>
+            </values>
+            <values>
+                <key>GA</key>
+                <value>GA</value>
+                <name>G^A</name>
+            </values>
+            <values>
+                <key>GC</key>
+                <value>GC</value>
+                <name>G^C</name>
+            </values>
+            <values defaultValue="true">
+                <key>GG</key>
+                <value>GG</value>
+                <name>G^G</name>
+            </values>
+            <values>
+                <key>GT</key>
+                <value>GT</value>
+                <name>G^T</name>
+            </values>
+            <values>
+                <key>TA</key>
+                <value>TA</value>
+                <name>T^A</name>
+            </values>
+            <values>
+                <key>TC</key>
+                <value>TC</value>
+                <name>T^C</name>
+            </values>
+            <values>
+                <key>TG</key>
+                <value>TG</value>
+                <name>T^G</name>
+            </values>
+            <values>
+                <key>TT</key>
+                <value>TT</value>
+                <name>T^T</name>
+            </values>
+            <guiElement>SELECTONEMENU</guiElement>
+        </enumParam>
+         
+        <enumParam id="chlain_enum_4_1_1">
+            <name>Restriction digest site for subsequent cloning</name>
+            <shortDescription>Restriction digest site to introduce at the start / 5'end.</shortDescription>
+            <description>The restriction digest site that will be inserted at the 
+                <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">5'</strong>-end.
+                If a restriction digest site is not wanted, choose the option "--None--".
+                Use the option "--custom--" if you want to supply your own nucleotide addition.</description>
+            <type>string</type>
+            <option>--cut_site_start </option>
+            <values defaultValue="true">
+                <key>None</key>
+                <value>None</value>
+                <name>--None--</name>
+            </values>
+            <values>
+                <key>AatII</key>
+                <value>GACGTC</value>
+                <name>AatII</name>
+            </values>
+            <values>
+                <key>AgeI</key>
+                <value>ACCGGT</value>
+                <name>AgeI</name>
+            </values>
+            <values>
+                <key>AvrII</key>
+                <value>CCTAGG</value>
+                <name>AvrII</name>
+            </values>
+            <values>
+                <key>BamHI</key>
+                <value>GGATCC</value>
+                <name>BamHI</name>
+            </values>
+            <values>
+                <key>BglII</key>
+                <value>AGATCT</value>
+                <name>BglII</name>
+            </values>
+            <values>
+                <key>EcoRI</key>
+                <value>GAATTC</value>
+                <name>EcoRI</name>
+            </values>                                
+            <values>
+                <key>EcoRV</key>
+                <value>GATATC</value>
+                <name>EcoRV</name>
+            </values>
+            <values>
+                <key>HindIII</key>
+                <value>AAGCTT</value>
+                <name>HindIII</name>
+            </values>
+            <values>
+                <key>KpnI</key>
+                <value>GGTACC</value>
+                <name>KpnI</name>
+            </values>
+            <values>
+                <key>MluI</key>
+                <value>ACGCGT</value>
+                <name>MluI</name>
+            </values>
+            <values>
+                <key>NdeI</key>
+                <value>CATATG</value>
+                <name>NdeI</name>
+            </values>
+            <values>
+                <key>ScaI</key>
+                <value>AGTACT</value>
+                <name>ScaI</name>
+            </values>
+            <values>
+                <key>SmaI</key>
+                <value>CCCGGG</value>
+                <name>SmaI</name>
+            </values>
+            <values>
+                <key>SpeI</key>
+                <value>ACTAGT</value>
+                <name>SpeI</name>
+            </values>
+            <values>
+                <key>XhoI</key>
+                <value>CTCGAG</value>
+                <name>XhoI</name>
+            </values>
+            <values>
+                <key>ZraI</key>
+                <value>GACGTC</value>
+                <name>ZraI</name>
+            </values>
+            <values>
+                <key>custom</key>
+                <value>custom</value>
+                <name>--custom--</name>
+            </values>
+            <guiElement>SELECTONEMENU</guiElement>
+        </enumParam>
+          
+        <enumParam id="chlain_enum_4_2_5">
+            <name>Restriction digest site for subsequent cloning</name>
+            <shortDescription>Restriction digest site to append to the 3'end.</shortDescription>
+            <description>The restriction digest site that will be appended to the 
+                <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">3'</strong>-end.
+                If a restriction digest site is not wanted, choose the option "--None--".
+                Use the option "--custom--" if you want to supply your own nucleotide addition.</description>
+            <type>string</type>
+            <option>--cut_site_end </option>
+            <values defaultValue="true">
+                <key>None</key>
+                <value>None</value>
+                <name>--None--</name>
+            </values>
+            <values>
+                <key>AatII</key>
+                <value>GACGTC</value>
+                <name>AatII</name>
+            </values>
+            <values>
+                <key>AgeI</key>
+                <value>ACCGGT</value>
+                <name>AgeI</name>
+            </values>
+            <values>
+                <key>AvrII</key>
+                <value>CCTAGG</value>
+                <name>AvrII</name>
+            </values>
+            <values>
+                <key>BamHI</key>
+                <value>GGATCC</value>
+                <name>BamHI</name>
+            </values>
+            <values>
+                <key>BglII</key>
+                <value>AGATCT</value>
+                <name>BglII</name>
+            </values>
+            <values>
+                <key>EcoRI</key>
+                <value>GAATTC</value>
+                <name>EcoRI</name>
+            </values>                                
+            <values>
+                <key>EcoRV</key>
+                <value>GATATC</value>
+                <name>EcoRV</name>
+            </values>
+            <values>
+                <key>HindIII</key>
+                <value>AAGCTT</value>
+                <name>HindIII</name>
+            </values>
+            <values>
+                <key>KpnI</key>
+                <value>GGTACC</value>
+                <name>KpnI</name>
+            </values>
+            <values>
+                <key>MluI</key>
+                <value>ACGCGT</value>
+                <name>MluI</name>
+            </values>
+            <values>
+                <key>NdeI</key>
+                <value>CATATG</value>
+                <name>NdeI</name>
+            </values>
+            <values>
+                <key>ScaI</key>
+                <value>AGTACT</value>
+                <name>ScaI</name>
+            </values>
+            <values>
+                <key>SmaI</key>
+                <value>CCCGGG</value>
+                <name>SmaI</name>
+            </values>
+            <values>
+                <key>SpeI</key>
+                <value>ACTAGT</value>
+                <name>SpeI</name>
+            </values>
+            <values>
+                <key>XhoI</key>
+                <value>CTCGAG</value>
+                <name>XhoI</name>
+            </values>
+            <values>
+                <key>ZraI</key>
+                <value>GACGTC</value>
+                <name>ZraI</name>
+            </values>
+            <values>
+                <key>custom</key>
+                <value>custom</value>
+                <name>--custom--</name>
+            </values>
+            <guiElement>SELECTONEMENU</guiElement>
+        </enumParam>
+        
+        <!-- Step 1 -->
+        <paramGroup id="chlain_grp_1">
+            <name>Step 1 - Back translation</name>
+            <shortDescription>Codon optimize cDNA sequence.</shortDescription>
+            <description>Codon optimize cDNA sequence.</description>
+            <paramref ref="chlain_enum_1_1"/>
+        </paramGroup>
+        
+        <!-- Step 2 -->
+        <paramGroup id="chlain_grp_2">
+            <name>Step 2 - Synonymous codon replacement to remove restriction digest sites</name>
+            <shortDescription>None</shortDescription>
+            <description>Select which cut sites will be removed from the cDNA sequence</description>
+            <paramref ref="chlain_enum_2_1"/>
+            <paramref ref="chlain_param_2_2"/>
+        </paramGroup>
+        
+        <!-- Step 3-->
+        <paramGroup id="chlain_grp_3">
+            <name>Step 3 - Intron insertion</name>
+            <shortDescription>Optimize cDNA sequence for maximum expression by intron spreading.</shortDescription>
+            <description>Optimize cDNA sequence for maximum expression by intron spreading.</description>
+            <paramref ref="chlain_enum_3_1_1"/>
+            <paramGroupref ref="chlain_grp_3_1_automatic"/>
+            <paramGroupref ref="chlain_grp_3_1_manual"/>      
+            <paramGroupref ref="chlain_grp_3_2"/>
+            <paramGroupref ref="chlain_grp_3_3"/>           
+        </paramGroup>
+        <paramGroup id="chlain_grp_3_1_automatic">
+           <name>Parameters for automatic determination of intron positions (default settings are optimal for C. reinhardtii)</name>
+           <paramref ref="chlain_param_3_1_2_2_1"/>
+           <paramref ref="chlain_param_3_1_2_2_2"/>
+           <paramref ref="chlain_param_3_1_2_2_3"/>
+           <paramref ref="chlain_param_3_1_2_2_4"/>
+        </paramGroup>
+        
+        <paramGroup id="chlain_grp_3_1_manual">
+            <name>Parameters for manual intron positions instead</name>
+            <paramref ref="chlain_param_3_1_2_0"/>
+            <paramref ref="chlain_param_3_1_2_1"/>
+        </paramGroup>
+        
+        <paramGroup id="chlain_grp_3_2">
+            <name>Intron DNA sequence</name>
+            <shortDescription>Select the intron sequence to insert into the cDNA sequence.</shortDescription>
+            <description>Select the intron sequence to insert into the cDNA sequence.</description>
+            <paramref ref="chlain_param_3_2_2"/>   
+        </paramGroup>
+        
+        <paramGroup id="chlain_grp_3_3">
+            <name>Optional: Define whether the last intron should be exchanged</name>
+            <shortDescription>Select whether the last intron should be exchanged.</shortDescription>
+            <description>Select whether the last intron should be exchanged.</description>
+            <paramref ref="chlain_param_3_3_1"/>
+            <paramref ref="chlain_param_3_3_2"/>
+        </paramGroup>
+        
+        <!-- Step 3_4 = only insert introns -->
+        <paramGroup id="chlain_grp_3_4">
+            <name>Only insert introns</name>
+            <shortDescription>Option to force that only step 3 = intron insertion is performed.</shortDescription>
+            <description>This group is used to highlight the checkbox to force 
+                that only step 3 = intron insertion is performed.</description>
+            <paramref ref="chlain_param_3_4_1"/>
+        </paramGroup>
+        
+        <!-- Step 4 -->
+        <paramGroup id="chlain_grp_4">
+            <name>Step 4 - Optional fine tuning of optimized sequence</name>
+            <shortDescription></shortDescription>
+            <description></description>
+            <paramGroupref ref="chlain_grp_4_1"/>
+            <paramGroupref ref="chlain_grp_4_2"/>
+        </paramGroup>
+        <paramGroup id="chlain_grp_4_1">
+            <name>Step 4.1 - Optional fine tuning of 5' end</name>
+            <shortDescription>Optional tune 5' end.</shortDescription>
+            <description>Optional tune 5' end.</description>
+            <paramref ref="chlain_enum_4_1_1"/>
+            <paramref ref="chlain_param_4_1_2"/>
+            <paramref ref="chlain_param_4_1_3"/>
+            <paramref ref="chlain_param_4_1_5"/>
+            <paramref ref="chlain_param_4_1_6"/>
+        </paramGroup>
+        <paramGroup id="chlain_grp_4_2">
+            <name>Step 4.2 - Optional fine tuning of 3' end</name>
+            <shortDescription>Optional tune 3' end.</shortDescription>
+            <description>Optional tune 3' end.</description>
+            <paramref ref="chlain_param_4_2_1"/>
+            <paramref ref="chlain_param_4_2_3"/>
+            <paramref ref="chlain_param_4_2_4"/>
+            <paramref ref="chlain_enum_4_2_5"/>
+            <paramref ref="chlain_param_4_2_6"/>
+        </paramGroup>
+        
+        <function id="intronserter_fct">
+            <name>Predefined codon usage table</name>
+            <shortDescription>for C. reinhardtii (Kazusa or HIVE-CUT).</shortDescription>
+            <inputref ref="intronserter_input"/>
+            <outputref ref="intronserter_ouput"/>
+            <outputfileref ref="intronserter_html"/>
+            <outputfileref ref="intronserter_genbank"/>
+            <paramGroup id="intronserter_pg">
+                <paramGroupref ref="chlain_grp_1"/>
+                <paramGroupref ref="chlain_grp_2"/>
+                <paramGroupref ref="chlain_grp_3"/>
+                <paramGroupref ref="chlain_grp_4"/>
+            </paramGroup>
+            <paramAndInputOutputOrder>
+                <reference>intronserter_input</reference>
+                <reference>intronserter_ouput</reference>
+                <!-- Step 1 -->
+                <reference>chlain_enum_1_1</reference>
+                <!-- Step 2 -->
+                <reference>chlain_enum_2_1</reference>
+                <reference>chlain_param_2_2</reference>
+                <!-- Step 3 -->        
+                <reference>chlain_enum_3_1_1</reference>
+                <reference>chlain_param_3_1_2_0</reference>
+                <reference>chlain_param_3_1_2_1</reference>
+                <reference>chlain_param_3_1_2_2_1</reference>
+                <reference>chlain_param_3_1_2_2_2</reference>
+                <reference>chlain_param_3_1_2_2_3</reference>
+                <reference>chlain_param_3_1_2_2_4</reference>
+                <reference>chlain_param_3_2_2</reference>
+                <reference>chlain_param_3_3_1</reference>
+                <reference>chlain_param_3_3_2</reference>
+                <!-- Step 4 -->
+                <reference>chlain_enum_4_1_1</reference>
+                <reference>chlain_param_4_1_2</reference>
+                <reference>chlain_param_4_1_3</reference>
+                <reference>chlain_param_4_1_5</reference>
+                <reference>chlain_param_4_1_6</reference>
+                
+                <reference>chlain_param_4_2_1</reference> 
+                <reference>chlain_param_4_2_3</reference>
+                <reference>chlain_param_4_2_4</reference>
+                <reference>chlain_enum_4_2_5</reference>
+                <reference>chlain_param_4_2_6</reference>
+            </paramAndInputOutputOrder>
+            <example>
+                <name>example_protein</name>
+                <prop idref="intronserter_input">PmV4YW1wbGVfcHJvdGVpbgpUU01HU0dTRFlSS1FWTlNOUkRJS0lZRU1NUE5JUUFHTlJWR1RJVllSVkdZV0tLVFFOQVBBUU1UUlJTSFZLR1dQVFFJV1BFWU5ZUFJHUFFWTVJZREhLTExHTEhHQVZHVkVTV0VIR1dWR0tLS1ZTV1lZV0lNTFJDQUxOUlJSUFBITU5BV0VGTkhLVldIV0ZIUUhMUUtOUklITVNHTlZLRFNQU1ZGTllNR0FNUlBXU0lMQVFHUFBQR1RXR0VGUEZGSVlESEFSREhBQVFFUElGSVJQUElWU0xEU1ZSTUlWUklLQ1FEV0RJRlNTTFlQWUxBTEFTTkVLTkFJTklBQUVUUFJUQ0tHUEdIRVdWSUZNU1JUQVlUTkVZSUFGQVRXTFJJWVNGS0ZRV0dFRkNHQVRLSVBMVldMVE1IUEtHUEtJQ0tLR0VOSFROUERRTklTTE5GTktTUFBNTlFJSE1ZV0hNS1FXSUxURkFUWVZLTUFFV1NHTklWVlFDS1dNTkxHTExFVE5IUEZRWUxSVk5IRk1GV1dTTVJMS01EQ1dRUElSRk5WRk5HRVNRS0dQRURHUkZIQVZTTk1QSU5GREhZTk5EQU5DRkZJR01JQVlNVkdQS1BDR0FNRVBLRVNZTVFNREVDV1JMQ1lESUdGV0RGSEtNUkNFR1NDR0dHR1RS</prop>               
+            </example>
+        </function>
+        
+        <function id="intronserter_custom_codon_table_fct">
+            <name>Custom user defined codon usage table</name>
+            <shortDescription>any species.</shortDescription>
+            <inputref ref="intronserter_input"/>
+            <inputref ref="intronserter_codon_table"/>
+            <outputref ref="intronserter_ouput"/>
+            <outputfileref ref="intronserter_html"/>
+            <outputfileref ref="intronserter_genbank"/>
+            <paramGroup id="intronserter_pg_2">
+                <paramGroupref ref="chlain_grp_2"/>
+                <paramGroupref ref="chlain_grp_3"/>
+                <paramGroupref ref="chlain_grp_4"/>
+            </paramGroup>
+            <paramAndInputOutputOrder>
+                <reference>intronserter_input</reference>
+                <reference>intronserter_codon_table</reference>
+                <reference>intronserter_ouput</reference>
+                <!-- Step 2 -->
+                <reference>chlain_enum_2_1</reference>
+                <reference>chlain_param_2_2</reference>
+                <!-- Step 3 -->
+                <reference>chlain_enum_3_1_1</reference>
+                <reference>chlain_param_3_1_2_0</reference>
+                <reference>chlain_param_3_1_2_1</reference>
+                <reference>chlain_param_3_1_2_2_1</reference>
+                <reference>chlain_param_3_1_2_2_2</reference>
+                <reference>chlain_param_3_1_2_2_3</reference>
+                <reference>chlain_param_3_1_2_2_4</reference>
+                <reference>chlain_param_3_2_2</reference>
+                <reference>chlain_param_3_3_1</reference>
+                <reference>chlain_param_3_3_2</reference>
+                <!-- Step 4 -->
+                <reference>chlain_enum_4_1_1</reference>
+                <reference>chlain_param_4_1_2</reference>
+                <reference>chlain_param_4_1_3</reference>
+                <reference>chlain_param_4_1_5</reference>
+                <reference>chlain_param_4_1_6</reference>
+                
+                <reference>chlain_param_4_2_1</reference>
+                <reference>chlain_param_4_2_3</reference>
+                <reference>chlain_param_4_2_4</reference>
+                <reference>chlain_enum_4_2_5</reference>
+                <reference>chlain_param_4_2_6</reference>
+            </paramAndInputOutputOrder>
+            <example>
+                <name>example_protein</name>
+                <prop idref="intronserter_input">PmV4YW1wbGVfcHJvdGVpbgpUU01HU0dTRFlSS1FWTlNOUkRJS0lZRU1NUE5JUUFHTlJWR1RJVllSVkdZV0tLVFFOQVBBUU1UUlJTSFZLR1dQVFFJV1BFWU5ZUFJHUFFWTVJZREhLTExHTEhHQVZHVkVTV0VIR1dWR0tLS1ZTV1lZV0lNTFJDQUxOUlJSUFBITU5BV0VGTkhLVldIV0ZIUUhMUUtOUklITVNHTlZLRFNQU1ZGTllNR0FNUlBXU0lMQVFHUFBQR1RXR0VGUEZGSVlESEFSREhBQVFFUElGSVJQUElWU0xEU1ZSTUlWUklLQ1FEV0RJRlNTTFlQWUxBTEFTTkVLTkFJTklBQUVUUFJUQ0tHUEdIRVdWSUZNU1JUQVlUTkVZSUFGQVRXTFJJWVNGS0ZRV0dFRkNHQVRLSVBMVldMVE1IUEtHUEtJQ0tLR0VOSFROUERRTklTTE5GTktTUFBNTlFJSE1ZV0hNS1FXSUxURkFUWVZLTUFFV1NHTklWVlFDS1dNTkxHTExFVE5IUEZRWUxSVk5IRk1GV1dTTVJMS01EQ1dRUElSRk5WRk5HRVNRS0dQRURHUkZIQVZTTk1QSU5GREhZTk5EQU5DRkZJR01JQVlNVkdQS1BDR0FNRVBLRVNZTVFNREVDV1JMQ1lESUdGV0RGSEtNUkNFR1NDR0dHR1RS</prop>
+                <prop idref="intronserter_codon_table">VFRUICA1LjQxICgzNTQ4MikgICBUQ1QgIDQuNTQgKDI5NzkzKSAgIFRBVCAgMi43NyAoMTgxNTIpICAgVEdUICAyLjYyICgxNzE2NykgClRUQyAyMC4zMiAoMTMzMjI0KSAgVENDIDE0LjYzICg5NTkzNSkgICBUQUMgMTguNDAgKDEyMDY0MikgIFRHQyAxMy42MyAoODkzNTkpIApUVEEgIDAuODQgKDU1MzgpICAgIFRDQSAgNC45NSAoMzI0NTUpICAgVEFBICAwLjQ1ICgyOTU3KSAgICBUR0EgIDAuNzkgKDUyMDApICAKVFRHICA2LjMzICg0MTUyMykgICBUQ0cgMTUuMDUgKDk4Njc0KSAgIFRBRyAgMC41MyAoMzQ3NSkgICAgVEdHIDEzLjYxICg4OTE5NykgCgpDVFQgIDUuMzYgKDM1MTUwKSAgIENDVCAgNy4wMyAoNDYxMDQpICAgQ0FUICAzLjQ2ICgyMjY3NikgICBDR1QgIDUuMzggKDM1MjkwKSAKQ1RDIDE0LjEzICg5MjY2NikgICBDQ0MgMjMuNzMgKDE1NTU3NikgIENBQyAxOC4zOCAoMTIwNTAwKSAgQ0dDIDMxLjE2ICgyMDQyODgpCkNUQSAgMy44NCAoMjUxOTUpICAgQ0NBICA3LjI0ICg0NzQ4NSkgICBDQUEgIDUuMjQgKDM0Mzg1KSAgIENHQSAgMy4zNSAoMjE5MzEpIApDVEcgNjUuNTIgKDQyOTU2NykgIENDRyAyNi45NCAoMTc2NjQ2KSAgQ0FHIDM3LjU3ICgyNDYzMDcpICBDR0cgMTkuMDUgKDEyNDg2MSkKCkFUVCAgNS44MiAoMzgxNDApICAgQUNUICA0LjkwICgzMjEwNikgICBBQVQgIDMuMTMgKDIwNTIwKSAgIEFHVCAgNC41OSAoMzAxMTQpIApBVEMgMTguMDUgKDExODMyNSkgIEFDQyAyMC44MCAoMTM2MzU4KSAgQUFDIDIwLjQ3ICgxMzQxODMpICBBR0MgMjcuMjUgKDE3ODYzNykKQVRBICAxLjkzICgxMjY0NCkgICBBQ0EgIDYuNTcgKDQzMDk2KSAgIEFBQSAgMy4wOCAoMjAyMDMpICAgQUdBICAxLjE2ICg3NTk2KSAgCkFURyAyMS4zMCAoMTM5NjE0KSAgQUNHIDE3LjgwICgxMTY2OTQpICBBQUcgMjguNDAgKDE4NjIxNCkgIEFHRyAgNC45NyAoMzI1ODEpIAoKR1RUICA0Ljk1ICgzMjQ3OCkgICBHQ1QgMTcuNjAgKDExNTM2MikgIEdBVCAgOC4wMiAoNTI1NTYpICAgR0dUIDEwLjUwICg2ODg0NykgCkdUQyAxMy42OCAoODk3MTcpICAgR0NDIDUxLjExICgzMzUwODcpICBHQUMgMzguMDkgKDI0OTcxOCkgIEdHQyA2MS43OSAoNDA1MDg1KQpHVEEgIDIuOTQgKDE5MjY5KSAgIEdDQSAxOC40MSAoMTIwNzI0KSAgR0FBICA0LjQ5ICgyOTQ1MykgICBHR0EgIDcuMDIgKDQ2MDI5KSAKR1RHIDQ2LjY1ICgzMDU4MjgpICBHQ0cgNTguNzIgKDM4NDk4OCkgIEdBRyA0Ni45OCAoMzA3OTY4KSAgR0dHIDE2LjUzICgxMDgzNDgp</prop>
+            </example>
+        </function>
+            
+        <function id="intronserter_dna_seq_fct">
+            <name>Instead of amino acid, DNA sequence input</name>
+            <shortDescription>ONLY introns are inserted.</shortDescription>
+            <inputref ref="intronserter_dna_seq"/>
+            <outputref ref="intronserter_ouput"/>
+            <outputfileref ref="intronserter_html"/>
+            <outputfileref ref="intronserter_genbank"/>
+            <paramGroup id="intronserter_pg_3">
+                <paramGroupref ref="chlain_grp_3"/>
+                <paramGroupref ref="chlain_grp_3_4"/>
+            </paramGroup>
+            <paramAndInputOutputOrder>
+                <reference>intronserter_dna_seq</reference>
+                <reference>intronserter_ouput</reference>
+                <!-- Step 3 -->
+                <reference>chlain_enum_3_1_1</reference>
+                <reference>chlain_param_3_1_2_0</reference>
+                <reference>chlain_param_3_1_2_1</reference>
+                <reference>chlain_param_3_1_2_2_1</reference>
+                <reference>chlain_param_3_1_2_2_2</reference>
+                <reference>chlain_param_3_1_2_2_3</reference>
+                <reference>chlain_param_3_1_2_2_4</reference>
+                <reference>chlain_param_3_2_2</reference>
+                <reference>chlain_param_3_3_1</reference>
+                <reference>chlain_param_3_3_2</reference>
+                <!-- Step 3_4 = only insert introns -->
+                <reference>chlain_param_3_4_1</reference>
+            </paramAndInputOutputOrder>            
+            <example>
+                <name>example_dna_sequence</name>
+                <prop idref="intronserter_dna_seq">PnNwfFE0OVNQM3xUUFNQU19QT0dDQiBQYXRjaG91bG9sIHN5bnRoYXNlCkFUR0dBR0NUR1RBQ0dDQ0NBR0FHQ0dUR0dHQ0dUR0dHQ0dDQ0dDQ0FHQ0NHQ0NDQ0NUR0dDQ0FBQ1RUQ0NBQ0NDQ1RHQ0dUR1RHR0dHQ0dBQ0FBR1RUQ0FUQ0dUR1RBQ0FBQ0NDQ0NBR0FHQ1RHQ0NBR0dDQ0dHQ0dBR0NHQ0dBR0dBR0dDQ0dBR0dBR0NUR0FBR0dUR0dBR0NUR0FBR0NHQ0dBR0NUR0FBR0dBR0dDQ0FHQ0dBQ0FBQ1RBQ0FUR0NHQ0NBR0NUR0FBR0FUR0dUR0dBQ0dDQ0FUQ0NBR0NHQ0NUR0dHQ0FUQ0dBQ1RBQ0NUR1RUQ0dUR0dBR0dBQ0dUR0dBQ0dBR0dDQ0NUR0FBR0FBQ0NUR1RUQ0dBR0FUR1RUQ0dBQ0dDQ1RUQ1RHQ0FBR0FBQ0FBQ0NBQ0dBQ0FUR0NBQ0dDQ0FDQ0dDQ0NUR0FHQ1RUQ0NHQ0NUR0NUR0NHQ0NBR0NBQ0dHQ1RBQ0NHQ0dUR0FHQ1RHQ0dBR0dUR1RUQ0dBR0FBR1RUQ0FBR0dBQ0dHQ0FBR0dBQ0dHQ1RUQ0FBR0dUR0NDQ0FBQ0dBR0dBQ0dHQ0dDQ0dUR0dDQ0dUR0NUR0dBR1RUQ1RUQ0dBR0dDQ0FDQ0NBQ0NUR0NHQ0dUR0NBQ0dHQ0dBR0dBQ0dUR0NUR0dBQ0FBQ0dDQ1RUQ0dBQ1RUQ0FDQ0NHQ0FBQ1RBQ0NUR0dBR0FHQ0dUR1RBQ0dDQ0FDQ0NUR0FBQ0dBQ0NDQ0FDQ0dDQ0FBR0NBR0dUR0NBQ0FBQ0dDQ0NUR0FBQ0dBR1RUQ0FHQ1RUQ0NHQ0NHQ0dHQ0NUR0NDQ0NHQ0dUR0dBR0dDQ0NHQ0FBR1RBQ0FUQ0FHQ0FUQ1RBQ0dBR0NBR1RBQ0dDQ0FHQ0NBQ0NBQ0FBR0dHQ0NUR0NUR0FBR0NUR0dDQ0FBR0NUR0dBQ1RUQ0FBQ0NUR0dUR0NBR0dDQ0NUR0NBQ0NHQ0NHQ0dBR0NUR0FHQ0dBR0dBQ0FHQ0NHQ1RHR1RHR0FBR0FDQ0NUR0NBR0dUR0NDQ0FDQ0FBR0NUR0FHQ1RUQ0dUR0NHQ0dBQ0NHQ0NUR0dUR0dBR0FHQ1RBQ1RUQ1RHR0dDQ0FHQ0dHQ0FHQ1RBQ1RUQ0dBR0NDQ0FBQ1RBQ0FHQ0dUR0dDQ0NHQ0FUR0FUQ0NUR0dDQ0FBR0dHQ0NUR0dDQ0dUR0NUR0FHQ0NUR0FUR0dBQ0dBQ0dUR1RBQ0dBQ0dDQ1RBQ0dHQ0FDQ1RUQ0dBR0dBR0NUR0NBR0FUR1RUQ0FDQ0dBQ0dDQ0FUQ0dBR0NHQ1RHR0dBQ0dDQ0FHQ1RHQ0NUR0dBQ0FBR0NUR0NDQ0dBQ1RBQ0FUR0FBR0FUQ0dUR1RBQ0FBR0dDQ0NUR0NUR0dBQ0dUR1RUQ0dBR0dBR0dUR0dBQ0dBR0dBR0NUR0FUQ0FBR0NUR0dHQ0dDQ0NDQ1RBQ0NHQ0dDQ1RBQ1RBQ0dHQ0FBR0dBR0dDQ0FUR0FBR1RBQ0dDQ0dDQ0NHQ0dDQ1RBQ0FUR0dBR0dBR0dDQ0NBR1RHR0NHQ0dBR0NBR0FBR0NBQ0FBR0NDQ0FDQ0FDQ0FBR0dBR1RBQ0FUR0FBR0NUR0dDQ0FDQ0FBR0FDQ1RHQ0dHQ1RBQ0FUQ0FDQ0NUR0FUQ0FUQ0NUR0FHQ1RHQ0NUR0dHQ0dUR0dBR0dBR0dHQ0FUQ0dUR0FDQ0FBR0dBR0dDQ1RUQ0dBQ1RHR0dUR1RUQ0FHQ0NHQ0NDQ0NDQ1RUQ0FUQ0dBR0dDQ0FDQ0NUR0FUQ0FUQ0dDQ0NHQ0NUR0dUR0FBQ0dBQ0FUQ0FDQ0dHQ0NBQ0dBR1RUQ0dBR0FBR0FBR0NHQ0dBR0NBQ0dUR0NHQ0FDQ0dDQ0dUR0dBR1RHQ1RBQ0FUR0dBR0dBR0NBQ0FBR0dUR0dHQ0FBR0NBR0dBR0dUR0dUR0FHQ0dBR1RUQ1RBQ0FBQ0NBR0FUR0dBR0FHQ0dDQ1RHR0FBR0dBQ0FUQ0FBQ0dBR0dHQ1RUQ0NUR0NHQ0NDQ0dUR0dBR1RUQ0NDQ0FUQ0NDQ0NUR0NUR1RBQ0NUR0FUQ0NUR0FBQ0FHQ0dUR0NHQ0FDQ0NUR0dBR0dUR0FUQ1RBQ0FBR0dBR0dHQ0dBQ0FHQ1RBQ0FDQ0NBQ0dUR0dHQ0NDQ0dDQ0FUR0NBR0FBQ0FUQ0FUQ0FBR0NBR0NUR1RBQ0NUR0NBQ0NDQ0dUR0NDQ1RBQ1RBQQ==</prop>
+            </example>
+        </function>
+        
+    </executable>
+    
+    <view type="submission" id="intronserter_submission"/>
+    
+    
+    <manual id="intronserter_manual">
+        <introductoryText>Welcome to 
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            Intronserter
+        </strong> - a tool for built to aid the 
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">design </strong> 
+        of 
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            intron-containing 
+        </strong>
+        optimized 
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">transgenes </strong>
+        for enhanced nuclear expression. 
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        Intronserter was developed primarily for 
+        <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            Chlamydomonas reinhardtii, 
+        </em>where systematic intron spreading into transgenes is necessary 
+        to enable robust expression from the nuclear genome. 
+        However, the Intronserter platform is fully customizable to any other 
+        target organism by enabling user-defined inputs such as codon tables 
+        and intron sequences. 
+        By default, this tool provides full codon optimization and intron 
+        spreading to encourage design of optimized transgenes for maximal 
+        expression from the eukaryotic algal nuclear genome.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        The strategy has been successfully applied in 
+        <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            C. reinhardtii
+        </em> with numerous examples in literature: 
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+            Yunus, I.S., Wichmann, J., Wördenweber, R., Lauersen, K.J., Kruse, O., Jones, P.R., 2018. 
+            Synthetic metabolic pathways for photobiological conversion of CO2 into hydrocarbon fuel. 
+            Metab. Eng. 49, 201?211. doi:10.1016/j.ymben.2018.08.008
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+            Baier, T., Kros, D., Feiner, R.C., Lauersen, K.J., Müller, K.M., Kruse, O., 2018. 
+            Engineered Fusion Proteins for Efficient Protein Secretion and Purification of a 
+            Human Growth Factor from the Green Microalga 
+            <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">Chlamydomonas reinhardtii</em>. 
+            ACS Synth. Biol. 7, 2547?2557. doi:10.1021/acssynbio.8b00226
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+            Baier, T., Wichmann, J., Kruse, O., Lauersen, K.J., 2018. 
+            Intron-containing algal transgenes mediate efficient recombinant gene 
+            expression in the green microalga 
+            <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">Chlamydomonas reinhardtii</em>. 
+            Nucleic Acids Res. 46, 6909?6919. doi:10.1093/nar/gky532
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+            Lauersen, K. J., Wichmann, J., Baier, T., Kampranis, S. C., Pateraki, I., Møller, B. L., Kruse, O. (2018). 
+            Phototrophic production of heterologous diterpenoids and a hydroxy-functionalized derivative from 
+            <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">Chlamydomonas reinhardtii</em>. 
+            Metablic Engineering. doi:10.1016/j.ymben.2018.07.005
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+            Wichmann, J., Baier, T., Wentnagel, E., Lauersen, K. J., Kruse, O. (2017). 
+            Tailored carbon partitioning for phototrophic production of (E)-?-bisabolene from the green microalga 
+            <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">Chlamydomonas reinhardtii</em>. 
+            Metabolic Engineering 45, 211-222. doi:10.1016/j.ymben.2017.12.010
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+            Lauersen K. J., Baier T., Wichmann J., Wördenweber R., Hübner W., Huser T., Kruse O. (2016). 
+            Efficient phototrophic production of a high-value sesquiterpenoid from the eukaryotic microalga 
+            <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">Chlamydomonas reinhardtii</em>. 
+            Metabolic Engineering 38, 331-343. doi:10.1016/j.ymben.2016.07.013.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        The intron spreading strategy used for engineering nuclear transgene expression with 
+        <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">
+            C. reinhardtii
+        </em> may also enhance transgene expression in other species, especially in other green algae. 
+        Therefore, Intronserter was designed so that all input parameters can be adjusted 
+        to fit any desired host. 
+        However, the enhancing effect of regulatory introns should be investigated first in 
+        other species, and the strategy outlined in Baier et al, 2018, might assist in this process.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        Intronserter starts from an input amino acid sequence, and yields its optimized (codon-optimized and intron-enriched) DNA sequence counterpart,
+        which is ready for gene synthesis, as outlined below:
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <img xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" src="images/intronserter_logo.png" alt="Intronserter Logo"/>
+        Figure 1: Outline of Intronserter.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">Towards this goal, Intronserter performs four steps:</strong>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        1. Back translation of the Amino Acid (AA) sequence using the most frequent codon for AA.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        2. Removal of restriction digest sites, so that, by default, restriction sites are avoided which are used in pOptimized and MoClo vector kits.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        3. Enriching the cDNA sequence with introns to maximize expression 
+        (here, the regulatory intron "rbcS2 intron 1" is used, as it has been shown to boost transgene expression 
+        in <em xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">C. reinhardtii</em> (see Baier et al, 2018).
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        4. Optional fine tuning of the resulting DNA sequence to add for instance a linker peptide for fusions.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">Step 3, the process of intron insertion, can be further dissected into three sub-steps:</strong>
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        3.1 Determination of intron positions:
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        3.1.1 Determination of putative intron insertion positions, based on the set of the four 
+        parameters "start, target, max and end".
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        3.1.2. At these position, the nucleotide pair, e.g. "G^G", where the intron is inserted, is searched.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        3.2. The supplied intron DNA sequence is inserted between the two bases given by nucleotide pair, i. e., between G^G.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        3.3. As a optional last step, the last intron can be substituted for another intron sequence, 
+        in order to maximize transgene expression in certain scenarios.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        This process is outlined below:
+        <img xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" src="images/intron_insertion.png" alt="intron_insertion"/>
+        Figure 2: Intron insertion process.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        Step 3.3., the optional substitution of the last intron for "rbcS2 intron 2", is recommended in 
+        C-terminal fusions in the pOptimized vector toolkit (see Baier et al, 2018), and for other vectors:
+        <img xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" src="images/rbcS2i2_explain.png" alt="rbcS2i2_explain"/>
+        Figure 3: Scenarios in which substitution of the last intron for 
+        rbcS2i<strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">2</strong>, 
+        instead of using
+        rbcS2i<strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">1</strong> only, is recommended.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        <strong xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml">Step 4, the optional fine tuning of the optimized sequence, has the following ordering:</strong>
+        <img xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" src="images/fine_tune_ordering.png" alt="fine_tune_ordering"/>
+        Figure 4: Ordering of the options for sequence fine tuning.
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        
+        <br xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml"/>
+        Below, the individual parameters are explained in more detail.
+        </introductoryText>
+        <customContent> </customContent>
+    </manual>
+    
+</runnableItem>
