@@ -37,10 +37,10 @@
     <references>
         <reference>@article{jae:2019,
             author={Jaeger, D. and  Baier, T. and  Lauersen, K. J. },
-            title={Intronserter ... - tba},
+            title={Intronserter, an advanced online tool for design of intron containing transgenes},
             year={2019},
-            journal={tba},
-            doi={tba}
+            journal={Algal Research},
+            doi={10.1016/j.algal.2019.101588}
             }</reference>
         <reference>@article{bai:2018,
             author={Baier, T. and  Wichmann, J. and  Kruse, O. and  Lauersen, K. J. },
@@ -95,23 +95,25 @@
         </execInfo>
         <input id="intronserter_input">
             <name>Amino Acid sequence</name>
-            <shortDescription>in FASTA format</shortDescription>
+            <shortDescription>in FASTA format (paste raw text or upload *.txt file type, encapsulated file types like *.doc or *.rtf are not supported)</shortDescription>
             <description>Amino Acid sequence in FASTA format that is converted by Intronserter to 
-                its optimized DNA counterpart. For an example, click on the corresponding button below.</description>
+                its optimized DNA counterpart. Uploaded file must be a .txt file type, encapsulated file types like .doc or 
+                .rtf are not supported. For an example, click on the corresponding 
+                button below.</description>
             <type>ToolDependentRepresentation</type>
             <handling>FILE</handling>
             <option/>
         </input>
         <input id="intronserter_codon_table">
-            <name>User defined codon usage table</name>
-            <shortDescription>in NCBI's standard genetic code definition available for instance at HIVE-CUT</shortDescription>
+            <name>User defined codon usage table </name>
+            <shortDescription>in NCBI's standard genetic code definition available for instance at HIVE-CUT (paste raw text or upload *.txt file type, encapsulated file types like *.doc or *.rtf are not supported)</shortDescription>
             <description>User defined codon usage table, supplied in the standard codon usage table format / 
                 in NCBI's standard genetic code definition,
                 found for instance at
                 <a xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" href="http://www.kazusa.or.jp/codon/cgi-bin/showcodon.cgi?species=3055">Kazusa</a>
                 or
                 <a xmlns="bibiserv:de.unibi.techfak.bibiserv.cms.microhtml" href="https://hive.biochemistry.gwu.edu/review/codon">HIVE-CUT</a>
-                .  For an example, click on the corresponding button below.
+                . Uploaded file must be a text file, encapsulated file types like *.doc or *.rtf are not supported.  For an example, click on the corresponding button below.
             </description>
             <type>ToolDependentRepresentation</type>
             <handling>FILE</handling>
@@ -119,9 +121,11 @@
         </input>
         <input id="intronserter_dna_seq">
             <name>DNA sequence</name>
-            <shortDescription>in FASTA format</shortDescription>
+            <shortDescription>in FASTA format (paste raw text or upload *.txt file type, encapsulated file types like *.doc or *.rtf are not supported)</shortDescription>
             <description>DNA sequence in FASTA format into which introns are inserted by 
-                Intronserter. Note that by using this option, only step 3 = intron insertion
+                Intronserter. Uploaded file must be a .txt file type, encapsulated file types like .doc or 
+                .rtf are not supported.
+                Note that by using this option, only step 3 = intron insertion
                 is performed, and step 1 (codon optimization), step 2 (cut site removal) and
                 step 4 (fine tuning) are skipped. This is intentionally done to leave your
                 input DNA sequence untouched, i.e. to assure that your input DNA sequence, 
