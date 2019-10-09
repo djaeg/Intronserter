@@ -10,4 +10,5 @@ An user friendly online version is available at [BiBiServ](https://bibiserv.cebi
 
 ## Reference
 Intronserter is published as:
+
 Jaeger, D., Baier, T. and Lauersen, K.J., "Intronserter, an advanced online tool for design of intron containing transgenes", Algal Research (2019), [doi](https://doi.org/10.1016/j.algal.2019.101588).
